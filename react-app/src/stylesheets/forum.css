@@ -1,0 +1,78 @@
+.camera-icon {
+	padding-left: 0px;
+	margin-top: 20px;
+}
+
+.main-textarea {
+	padding-right: 0px;
+}
+
+.thread-body {
+	padding-left: 0px;
+}
+
+.thread-date {
+	font-weight: 400;
+	font-size: 15px;
+}
+
+.post-button {
+	margin-top: 35px;
+	padding-left: 30px !important;
+	padding-right: 30px !important;
+
+}
+
+.delete-button {
+	margin-top: 35px;
+	padding-left: 22px !important;
+	padding-right: 22px !important;
+}
+
+hr {
+	margin: 0px 0px 0px 0px;
+	color: #CED4DA;
+}
+
+.reply-label {
+	margin-top: 8px;
+}
+
+.icon-button {
+	cursor: pointer;
+}
+
+.add-image-footer {
+	padding-right: 0px;
+}
+
+.error-comment-text {
+	color: red;
+	font-weight: 500;
+}
+
+.thread-card {
+	background-color: #F6F6F6;
+	width: 800px;
+}
+
+.thread-card-body {
+	padding-left: 0px;
+}
+
+.error-message {
+	width: 800px;
+}
+
+.error-message-text {
+	font-weight: 700;
+}
+
+.home-page-spacer {
+	height: 55px;
+}
+
+.post-image {
+	max-height: 300px;
+	max-width: 600px;
+}
