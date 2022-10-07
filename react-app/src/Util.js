@@ -15,11 +15,11 @@ const NAME_REGEX = /[^a-zA-Z ]+/;
 
 // --- User ---------------------------------------------------------------------------------------
 async function isEmailRegistered(email) {
-    const response = await axios.get(API_HOST + "/api/users/select/", { params: { email } });
-    const users = response.data;
+    const response = await axios.get(API_HOST + "/api/users/select", { params: { email } });
+    let user = response.data;
 
     // Email already registered
-    if (users.count > 0)
+    if (user !== "" && user !== undefined && user !== null)
         return true;
 
     return false;
@@ -46,67 +46,32 @@ async function verifyUser(email, password) {
 }
 
 // Remove users and delete their threads/comments
-function deleteUser(user) {
+async function deleteUser(user) {
+    const response = await axios.delete(API_HOST + "/api/profiles/delete", { data: { userID: user.userID }} );
+    const success = response.data;
 
-    // Get users
-    let users = getUsers();
-    // Remove user from list
-    users = users.filter((value) => value.email !== user.email);
-    // Update users
-    localStorage.setItem(USERS, JSON.stringify(users));
+    console.log(success);
 
     // Delete all threads and comments from user
-    deleteAllPostsById(user.uid)
+    // deleteAllPostsById(user.userID)
 }
 
-function updateUserProfile(name, email, password) {
-
-    // Get user info
-    let users = getUsers();
-    let userInfo = getUserInfo();
-
-    for (let i = 0; i < users.length; i++) {
-        if (users[i].email === userInfo.email) {
-            // Update details in list
-            users[i].name = name;
-            users[i].email = email;
-
-            // Update for login info
-            userInfo.name = name;
-            userInfo.email = email;
-
-            if (password.length > 0) {
-                users[i].password = password;
-                userInfo.password = password;
-            }
-            break;
-        }
-    }
+async function updateUserProfile(userID, name, email, password) {
+    const response = await axios.put(API_HOST + "/api/profiles/update", { userID, name, email, password });
+    const user = response.data;
 
     // Update user
-    localStorage.setItem(USER_DATA, JSON.stringify(userInfo));
-    localStorage.setItem(USERS, JSON.stringify(users));
+    localStorage.setItem(USER_DATA, JSON.stringify(user));
 }
 
-function updateProfilePic(imageURL) {
-    // Get user info
-    let users = getUsers();
-    let userInfo = getUserInfo();
+async function updateProfilePic(userID, profilePic) {
+    const response = await axios.put(API_HOST + "/api/profiles/update", { userID, profilePic });
+    const user = response.data;
 
-    for (let i = 0; i < users.length; i++) {
-        if (users[i].email === userInfo.email) {
-            // Update details in list
-            users[i].profilePic = imageURL;
-
-            // Update for login info
-            userInfo.profilePic = imageURL;
-            break;
-        }
-    }
+    console.log(user);
 
     // Update user
-    localStorage.setItem(USER_DATA, JSON.stringify(userInfo));
-    localStorage.setItem(USERS, JSON.stringify(users));
+    localStorage.setItem(USER_DATA, JSON.stringify(user));
 }
 
 // --- Helper Functions ---------------------------------------------------------------------------------------
