@@ -46,17 +46,14 @@ async function verifyUser(email, password) {
 }
 
 // Remove users and delete their threads/comments
-function deleteUser(user) {
+async function deleteUser(user) {
+    const response = await axios.delete(API_HOST + "/api/profiles/delete", { data: { userID: user.userID }} );
+    const success = response.data;
 
-    // Get users
-    let users = getUsers();
-    // Remove user from list
-    users = users.filter((value) => value.email !== user.email);
-    // Update users
-    localStorage.setItem(USERS, JSON.stringify(users));
+    console.log(success);
 
     // Delete all threads and comments from user
-    deleteAllPostsById(user.uid)
+    // deleteAllPostsById(user.userID)
 }
 
 async function updateUserProfile(userID, name, email, password) {

@@ -54,5 +54,7 @@ exports.update = async (req, res) => {
 
 // Delete user record
 exports.delete = async (req, res) => {
-	// TO DO
+	await db.user.destroy({ where: { userID: req.body.userID } });
+
+	res.json("success");
 };
