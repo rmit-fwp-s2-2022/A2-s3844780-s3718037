@@ -16,10 +16,10 @@ const NAME_REGEX = /[^a-zA-Z ]+/;
 // --- User ---------------------------------------------------------------------------------------
 async function isEmailRegistered(email) {
     const response = await axios.get(API_HOST + "/api/users/select/", { params: { email } });
-    const user = response.data;
+    const users = response.data;
 
     // Email already registered
-    if (user !== null)
+    if (users.count > 0)
         return true;
 
     return false;
@@ -27,7 +27,7 @@ async function isEmailRegistered(email) {
 
 // Create user on the database
 async function registerUser(name, email, password) {
-    const response = await axios.get(API_HOST + "/api/users/", { params: { name, email, password } });
+    const response = await axios.post(API_HOST + "/api/users", { name, email, password });
     const user = response.data;
 
     return user;
@@ -37,6 +37,7 @@ async function registerUser(name, email, password) {
 async function verifyUser(email, password) {
     const response = await axios.get(API_HOST + "/api/users/login", { params: { email, password } });
     const user = response.data;
+    console.log(user);
 
     if (user !== null)
         return user;

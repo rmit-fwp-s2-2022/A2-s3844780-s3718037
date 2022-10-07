@@ -1,7 +1,6 @@
-import DEFAULT_PROFILE_PIC from "../Util.js"
-
 const db = require("../database");
 const argon2 = require("argon2");
+const DEFAULT_PROFILE_PIC = "https://i.imgur.com/7A1AbrN.png";
 	
 // Select all users from the database.
 exports.all = async (req, res) => {
@@ -12,10 +11,10 @@ exports.all = async (req, res) => {
 
 // Select one user from the database.
 exports.one = async (req, res) => {
-	const user = null;
+	let user = null;
 
 	// ID
-	if (req.params.id !== null)
+	if (req.params.id !== undefined && req.params.id !== null)
 		user = await db.user.findByPk(req.params.id);
 
 	// EMAIL
@@ -27,9 +26,9 @@ exports.one = async (req, res) => {
 
 // Select one user from the database if email and password are a match.
 exports.login = async (req, res) => {
-	const user = await db.user.findAll({ where: { email: req.query.email } });
+	const user = (await db.user.findAll({ where: { email: req.query.email } }))[0];
 
-	if (user === null || await argon2.verify(user.password_hash, req.query.password) === false)
+	if (user === null || await argon2.verify(user.passwordHash, req.query.password) === false)
 		// Login failed.
 		res.json(null);
 	else
@@ -39,13 +38,13 @@ exports.login = async (req, res) => {
 // Create a user in the database.
 exports.create = async (req, res) => {
 	const hash = await argon2.hash(req.body.password, { type: argon2.argon2id });
-
+	
 	const user = await db.user.create({
-		username: req.body.username,
+		name: req.body.name,
 		email: req.body.email,
-		password_hash: hash,
+		passwordHash: hash,
 		profilePic: DEFAULT_PROFILE_PIC
 	});
-
+	
 	res.json(user);
 };
