@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { validPassword, validEmail, updateUserProfile, updateProfilePic, NAME_REGEX } from "../Util";
+import { validPassword, validEmail, updateUserProfile, updateProfilePic, NAME_REGEX, isEmailRegistered } from "../Util";
 
 const IMAGE_URL_PATTERN = "^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)$";
 
@@ -31,7 +31,7 @@ export default function EditProfile(props) {
         }, 500);
     }
 
-    const inputChange = (event) => {
+    const handleInputChange = (event) => {
         const name = event.target.name;
         let value = event.target.value;
 
@@ -40,42 +40,51 @@ export default function EditProfile(props) {
             document.querySelector("#edit-profile-name").value = value;
         }
 
-        const copyInputs = { ...inputs };
-
-        copyInputs[name] = value;
-        setInputs(copyInputs);
+        setInputs({...inputs, [name]: value});
     }
 
-    const saveProfile = (event) => {
+    const saveProfile = async (event) => {
         event.preventDefault(); // Prevent page from refreshing/reloading
+        const emailLowerCase = inputs.email.toLowerCase();
+        
+        let emailRegistered;
+        if (emailLowerCase === props.user.email)
+            emailRegistered = false;
+        else
+            emailRegistered = await isEmailRegistered(emailLowerCase);
 
-        if (validEmail(inputs.email)) {
-            // Has valid password
-            if (validPassword(inputs.password) || inputs.password.length === 0) {
-                // Passwords are the same
-                if (inputs.password === inputs.samePassword || inputs.password.length === 0) {
-                    // Update user details
-                    updateUserProfile(inputs.name, inputs.email, inputs.password);
+        if (!emailRegistered) {
+            if (validEmail(emailLowerCase)) {
+                // Has valid password
+                if (validPassword(inputs.password) || inputs.password.length === 0) {
+                    // Passwords are the same
+                    if (inputs.password === inputs.samePassword || inputs.password.length === 0) {
 
-                    // Update user useState variable
-                    props.updateUser();
-
-                    // Reset modal
-                    resetInputs.name = inputs.name;
-                    resetInputs.email = inputs.email;
-                    reset();
-
-                    // Close the modal
-                    document.getElementById("edit-profile-btn-close").click();
+                        // Update user details
+                        await updateUserProfile(props.user.userID, inputs.name, inputs.email, inputs.password);
+    
+                        // Update user useState variable
+                        props.updateUser();
+    
+                        // Reset modal
+                        resetInputs.name = inputs.name;
+                        resetInputs.email = inputs.email;
+                        reset();
+    
+                        // Close the modal
+                        document.getElementById("edit-profile-btn-close").click();
+                    }
+                    else
+                        setErrorMessage("Password do not match");
                 }
                 else
-                    setErrorMessage("Password do not match");
+                    setErrorMessage("Not a valid password");
             }
             else
-                setErrorMessage("Not a valid password");
+                setErrorMessage("Not a valid email address");
         }
         else
-            setErrorMessage("Not a valid email address");
+            setErrorMessage("Email address already used");
     }
 
 
@@ -85,11 +94,11 @@ export default function EditProfile(props) {
         setProfileURL(value);
     }
 
-    const submitURL = (event) => {
+    const submitURL = async (event) => {
         event.preventDefault(); // Prevent Refresh
 
         // Update User
-        updateProfilePic(profileURL);
+        await updateProfilePic(props.user.userID, profileURL);
         props.updateUser();
 
         // Reset
@@ -161,17 +170,17 @@ export default function EditProfile(props) {
                                 <div className="mb-3">
                                     <label htmlFor="edit-profile-name" className="form-label">Name</label>
                                     <input name="name" type="text" className="form-control" id="edit-profile-name"
-                                        onChange={inputChange} value={inputs.name} placeholder="Enter your name" required />
+                                        onChange={handleInputChange} value={inputs.name} placeholder="Enter your name" required />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="edit-profile-email" className="form-label" >Email address</label>
                                     <input name="email" type="email" className="form-control" id="edit-profile-email"
-                                        onChange={inputChange} value={inputs.email} placeholder="Enter your email address" required />
+                                        onChange={handleInputChange} value={inputs.email} placeholder="Enter your email address" required />
                                 </div>
                                 <div>
                                     <label htmlFor="edit-profile-password" className="form-label" >Change Password</label>
                                     <input name="password" type="password" className="form-control" id="edit-profile-password"
-                                        onChange={inputChange} placeholder="Enter your new password" />
+                                        onChange={handleInputChange} placeholder="Enter your new password" />
                                 </div>
                                 <div className="form-text mb-3" id="password-help-block" >
                                     <p>
@@ -182,7 +191,7 @@ export default function EditProfile(props) {
                                 <div className="mb-3">
                                     <label htmlFor="edit-profile-password-again" className="form-label" >Re-enter Password</label>
                                     <input name="samePassword" type="password" className="form-control" id="edit-profile-password-again"
-                                        onChange={inputChange} placeholder="Re-enter your new password" />
+                                        onChange={handleInputChange} placeholder="Re-enter your new password" />
                                 </div>
                                 <button type="submit" className="btn btn-primary">Save</button>
                             </form>

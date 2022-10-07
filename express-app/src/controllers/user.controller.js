@@ -9,7 +9,7 @@ exports.all = async (req, res) => {
 	res.json(users);
 };
 
-// Select one user from the database.
+// Select one from the database.
 exports.one = async (req, res) => {
 	let user = null;
 
@@ -19,7 +19,7 @@ exports.one = async (req, res) => {
 
 	// EMAIL
 	else if (req.params.email !== null)
-		user = await db.user.findAll({ where: { email: req.query.email } });
+		user = (await db.user.findAll({ where: { email: req.query.email } }))[0];
 
 	res.json(user);
 };
