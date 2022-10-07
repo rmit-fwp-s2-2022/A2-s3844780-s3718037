@@ -1,22 +1,28 @@
 module.exports = (sequelize, DataTypes) =>
-  sequelize.define("user", {
-    username: {
-      type: DataTypes.STRING(32),
-      primaryKey: true
-    },
-    password_hash: {
-      type: DataTypes.STRING(96),
-      allowNull: false
-    },
-    first_name: {
-      type: DataTypes.STRING(40),
-      allowNull: false
-    },
-    last_name: {
-      type: DataTypes.STRING(40),
-      allowNull: false
-    }
-  }, {
-    // Don't add the timestamp attributes (updatedAt, createdAt).
-    timestamps: false
-  });
+	sequelize.define("user", {
+		userID: {
+			type: DataTypes.INTEGER,
+			autoIncrement: true,
+			primaryKey: true,
+			allowNull: false
+		},
+		username: {
+			type: DataTypes.STRING(32),
+			allowNull: false
+		},
+		email: {
+			type: DataTypes.TEXT,
+			allowNull: false
+		},
+		passwordHash: {
+			type: DataTypes.STRING(96),
+			allowNull: false
+		},
+		profilePic: {
+			type: DataTypes.TEXT,
+			allowNull: false
+		},
+	}, {
+		// Add the timestamp attributes (updatedAt, createdAt).
+		timestamps: true
+	});
