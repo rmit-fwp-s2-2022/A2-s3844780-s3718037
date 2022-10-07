@@ -22,20 +22,14 @@ export default function Login(props) {
         setInputs(clearInputs);
     }
 
-    const inputChange = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
-
-        const copyInputs = { ...inputs };
-
-        copyInputs[name] = value;
-        setInputs(copyInputs);
+    const handleInputChange = (event) => {
+        setInputs({ ...inputs, [event.target.name]: event.target.value });
     }
 
-    const userLogin = (event) => {
+    const userLogin = async (event) => {
         event.preventDefault(); // Prevent page from refreshing/reloading
 
-        const user = verifyUser(inputs.email.toLowerCase(), inputs.password);
+        const user = await verifyUser(inputs.email.toLowerCase(), inputs.password);
 
         if (user !== null) {
             // Close Login Modal
@@ -74,12 +68,12 @@ export default function Login(props) {
                             <div className="mb-3">
                                 <label htmlFor="login-email" className="form-label" >Email address</label>
                                 <input name="email" type="email" className="form-control" id="login-email"
-                                    onChange={inputChange} placeholder="Enter your email address" required />
+                                    onChange={handleInputChange} placeholder="Enter your email address" required />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="login-password" className="form-label" >Password</label>
                                 <input name="password" type="password" className="form-control" id="login-password"
-                                    onChange={inputChange} placeholder="Enter your password" required />
+                                    onChange={handleInputChange} placeholder="Enter your password" required />
                             </div>
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>

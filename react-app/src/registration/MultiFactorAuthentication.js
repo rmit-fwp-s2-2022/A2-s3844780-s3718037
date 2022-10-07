@@ -24,7 +24,7 @@ export default function MultiFactorAuthentication(props) {
 		setErrorMessage(null);
 	}
 
-	const inputChange = (event) => {
+	const handleInputChange = (event) => {
 		const value = event.target.value;
 
 		// Only numbers allowed
@@ -116,7 +116,7 @@ export default function MultiFactorAuthentication(props) {
 						<p className="fs-6 mb-3"></p>
 						<div className="input-group">
 							<input name="code" type="text" className="form-control" id="mfa-code"
-								onChange={inputChange} placeholder="Enter the verification code" disabled />
+								onChange={handleInputChange} placeholder="Enter the verification code" disabled />
 							<button className="btn btn-success" id="mfa-btn-send-code"
 								style={{ width: "22%", whiteSpace: "nowrap" }} onClick={sendEmail}>Send Code</button>
 						</div>

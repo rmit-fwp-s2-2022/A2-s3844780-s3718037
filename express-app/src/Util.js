@@ -1,0 +1,1 @@
+const DEFAULT_PROFILE_PIC = "https://i.imgur.com/7A1AbrN.png";

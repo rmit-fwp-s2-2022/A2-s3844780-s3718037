@@ -1,13 +1,19 @@
+import axios from "axios";
+
+// --- Constants ----------------------------------------------------------------------------------
+const API_HOST = "http://localhost:4000";
 const USERS = "users"
 const USER_DATA = 'user_data';
 const THREADS = "threads"
 const COMMENTS = "comments"
 
+// --- Regex -----------------------------------------------------------------------------
 // eslint-disable-next-line no-useless-escape
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PASSWORD_REGEX = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/;
 const NAME_REGEX = /[^a-zA-Z ]+/;
 
+// --- User ---------------------------------------------------------------------------------------
 function isEmailRegistered(email) {
     const users = getUsers();
 
@@ -49,6 +55,17 @@ function registerUser(name, email, password) {
     localStorage.setItem(USERS, JSON.stringify(users));
 
     return user;
+}
+
+// Login authentication
+async function verifyUser(email, password) {
+    const response = await axios.get(API_HOST + "/api/users/login", { params: { email, password } });
+    const user = response.data;
+
+    if (user !== null)
+        return user;
+
+    return null;
 }
 
 // Remove users and delete their threads/comments
@@ -115,6 +132,7 @@ function updateProfilePic(imageURL) {
     localStorage.setItem(USERS, JSON.stringify(users));
 }
 
+// --- Helper Functions ---------------------------------------------------------------------------------------
 // Return a pre-formatted date when a user registers their account
 function dateFormatter() {
     const date = new Date();
@@ -143,18 +161,6 @@ function validPassword(password) {
 // Email validation
 function validEmail(email) {
     return EMAIL_REGEX.test(email);
-}
-
-// Login authentication
-function verifyUser(email, password) {
-    const users = getUsers();
-
-    if (users !== null)
-        for (const user of users)
-            if (user.email === email && user.password === password)
-                return user;
-
-    return null;
 }
 
 function getUserInfo() {
@@ -204,6 +210,8 @@ function getAllThreadsByID(uid) {
         return threads.filter(thread => thread.tid === uid);
     }
 }
+
+// --- Thread & Comments ---------------------------------------------------------------------------------------
 
 // Save new thread details to localstorage, return individual thread.
 function newThread(post, postPic) {
