@@ -22,7 +22,7 @@ export default function SignUp(props) {
         setInputs(clearInputs)
     }
 
-    const inputChange = (event) => {
+    const handleInputChange = (event) => {
         const name = event.target.name;
         let value = event.target.value;
 
@@ -31,18 +31,15 @@ export default function SignUp(props) {
             document.querySelector("#signup-name").value = value;
         }
 
-        const copyInputs = { ...inputs };
-
-        copyInputs[name] = value;
-        setInputs(copyInputs);
+        setInputs({ ...inputs, [name]: value});
     }
 
-    const userSignUp = (event) => {
+    const userSignUp = async (event) => {
         event.preventDefault(); // Prevent page from refreshing/reloading
 
         const emailLowerCase = inputs.email.toLowerCase();
 
-        const isRegistered = isEmailRegistered(emailLowerCase);
+        const isRegistered = await isEmailRegistered(emailLowerCase);
 
         // User not yet registered
         if (!isRegistered) {
@@ -52,7 +49,7 @@ export default function SignUp(props) {
                     // Passwords are the same
                     if (inputs.password === inputs.samePassword) {
                         // Register the user
-                        const user = registerUser(inputs.name, emailLowerCase, inputs.password);
+                        const user = await registerUser(inputs.name, emailLowerCase, inputs.password);
 
                         reset();
 
@@ -101,17 +98,17 @@ export default function SignUp(props) {
                             <div className="mb-3">
                                 <label htmlFor="signup-name" className="form-label">Name</label>
                                 <input name="name" type="text" className="form-control" id="signup-name"
-                                    onChange={inputChange} placeholder="Enter your name" required />
+                                    onChange={handleInputChange} placeholder="Enter your name" required />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="signup-email" className="form-label" >Email address</label>
                                 <input name="email" type="email" className="form-control" id="signup-email"
-                                    onChange={inputChange} placeholder="Enter your email address" required />
+                                    onChange={handleInputChange} placeholder="Enter your email address" required />
                             </div>
                             <div>
                                 <label htmlFor="signup-password" className="form-label" >New Password</label>
                                 <input name="password" type="password" className="form-control" id="signup-password"
-                                    onChange={inputChange} placeholder="Enter your password" required />
+                                    onChange={handleInputChange} placeholder="Enter your password" required />
                             </div>
                             <div className="form-text mb-3" id="password-help-block" >
                                 <p>
@@ -122,7 +119,7 @@ export default function SignUp(props) {
                             <div className="mb-3">
                                 <label htmlFor="signup-password-again" className="form-label" >Re-enter Password</label>
                                 <input name="samePassword" type="password" className="form-control" id="signup-password-again"
-                                    onChange={inputChange} placeholder="Re-enter your password" required />
+                                    onChange={handleInputChange} placeholder="Re-enter your password" required />
                             </div>
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
