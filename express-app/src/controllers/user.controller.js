@@ -12,7 +12,15 @@ exports.all = async (req, res) => {
 
 // Select one user from the database.
 exports.one = async (req, res) => {
-	const user = await db.user.findByPk(req.params.id);
+	const user = null;
+
+	// ID
+	if (req.params.id !== null)
+		user = await db.user.findByPk(req.params.id);
+
+	// EMAIL
+	else if (req.params.email !== null)
+		user = await db.user.findAll({ where: { email: req.query.email } });
 
 	res.json(user);
 };

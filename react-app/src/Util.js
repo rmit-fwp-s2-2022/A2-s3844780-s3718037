@@ -14,45 +14,21 @@ const PASSWORD_REGEX = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/;
 const NAME_REGEX = /[^a-zA-Z ]+/;
 
 // --- User ---------------------------------------------------------------------------------------
-function isEmailRegistered(email) {
-    const users = getUsers();
+async function isEmailRegistered(email) {
+    const response = await axios.get(API_HOST + "/api/users/select/", { params: { email } });
+    const user = response.data;
 
-    // At least one user registered
-    if (users !== null)
-        // Check if the email is registered
-        for (const user of users)
-            if (user.email === email)
-                return true;
+    // Email already registered
+    if (user !== null)
+        return true;
 
     return false;
 }
 
-// Send new users details to localstorage
-function registerUser(name, email, password) {
-    // Get stored users
-    let users = getUsers();
-
-    // Obtain current date
-    const joinDate = dateFormatter();
-    // Set default profile picture
-    const profilePic = 'https://i.imgur.com/7A1AbrN.png'
-
-    // Assign a user ID
-    let uid = null
-    if (users !== null) {
-        // Obtain a new unique user ID (uid)
-        uid = Math.max(...users.map(user => user.uid)) + 1
-    } else {
-        uid = 1
-    }
-
-    const user = { uid: uid, name: name, email: email, password: password, joinDate: joinDate, profilePic: profilePic }; // TODO - Encrypt the password
-
-    if (users === null)
-        users = [];
-
-    users.push(user);
-    localStorage.setItem(USERS, JSON.stringify(users));
+// Create user on the database
+async function registerUser(name, email, password) {
+    const response = await axios.get(API_HOST + "/api/users/", { params: { name, email, password } });
+    const user = response.data;
 
     return user;
 }
