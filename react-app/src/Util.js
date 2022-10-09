@@ -72,6 +72,36 @@ async function updateProfilePic(userID, profilePic) {
     localStorage.setItem(USER_DATA, JSON.stringify(user));
 }
 
+// --- Follow ---------------------------------------------------------------------------------------
+async function followUser(userID, userFollowedID, isFollowing) {
+    if (isFollowing)
+    {
+        // Follow User
+        const response = await axios.post(API_HOST + "/api/follows", { userID, userFollowedID });
+        const data = response.data;
+
+        return true;
+    }
+    else
+    {
+        // Unfollow User
+        const response = await axios.delete(API_HOST + "/api/follows", { data: { userID, userFollowedID } });
+        const data = response.data;
+
+        return false;
+    }
+}
+
+async function isUserFollowed(userID, userFollowedID) {
+    const response = await axios.get(API_HOST + "/api/follows", { params: { userID, userFollowedID } });
+    const user = response.data;
+
+    if (user !== undefined && user !== null && user !== "")
+        return true;
+    
+    return false;
+}
+
 // --- Helper Functions ---------------------------------------------------------------------------------------
 // Return a pre-formatted date when a user registers their account
 function dateFormatter() {
@@ -280,6 +310,7 @@ export {
     deleteUser,
     updateUserProfile,
     updateProfilePic,
+    followUser, isUserFollowed,
     validPassword,
     validEmail,
     verifyUser,

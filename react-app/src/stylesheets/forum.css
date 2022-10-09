@@ -76,3 +76,13 @@ hr {
 	max-height: 300px;
 	max-width: 600px;
 }
+
+.profile-link {
+	color: inherit;
+	text-decoration: none;
+}
+
+.profile-link:hover {
+	color: inherit;
+	text-decoration: underline;
+}

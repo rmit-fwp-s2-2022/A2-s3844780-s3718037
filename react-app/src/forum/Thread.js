@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getUserByID, newComment, getCommentsByID } from "../Util";
+import { useNavigate } from "react-router-dom";
 import Comment from "./Comment";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -11,6 +12,8 @@ export default function Thread(props) {
     const [comment, setComment] = useState("")
     const [errorMessage, setErrorMessage] = useState(null)
     const [user, setUser] = useState(null)
+
+	const navigate = useNavigate();
 
     // Fill form elements with current thread data.
     const resetInputs = {
@@ -75,6 +78,12 @@ export default function Thread(props) {
         setErrorMessage(null)
     }
 
+    // View Profile of User
+    const viewProfile = (event) => {
+        event.preventDefault();
+        navigate("/profile", { state: { user: user } });
+    }
+ 
     // Get all comments by thread ID
     let comments = getCommentsByID(props.tid)
 
@@ -93,7 +102,9 @@ export default function Thread(props) {
                         </div>
                         <div className="col-sm-11 main-textarea">
                             <div className="card-body mx-5 mt-1 thread-body">
-                                <h5 className="card-title pt-1">{user != null ? user.name : ""}
+                                <h5 className="card-title pt-1">{user != null ?
+                                    <a href="" onClick={viewProfile} className="profile-link"
+                                        >{user.name}</a> : ""}
                                     <span className="text-muted thread-date"> · {props.postDate}  </span>
                                     <EditIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#edit-post-modal" + props.tid} style={{ color: 'grey', fontSize: 20 }} />
                                     <DeleteIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#delete-post-modal" + props.tid} style={{ color: 'grey', fontSize: 20 }} />
