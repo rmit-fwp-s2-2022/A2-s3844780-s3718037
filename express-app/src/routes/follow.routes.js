@@ -5,6 +5,9 @@ module.exports = (express, app) => {
   // Is user following this user?
   router.get("/", controller.isFollow);
 
+  // Get all follows user is following
+  router.get("/all", controller.allFollows);
+
   // Unfollow a user
   router.delete("/", controller.unfollow);
 

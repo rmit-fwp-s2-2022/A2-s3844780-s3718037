@@ -3,19 +3,26 @@ const db = require("../database");
 	
 // Is user following the user?
 exports.isFollow = async (req, res) => {
-	const user = (await db.followUser.findAll({ where: { userID: req.query.userID, userFollowedID: req.query.userFollowedID} }))[0];
+	const followRecord = (await db.followUser.findAll({ where: { userID: req.query.userID, userFollowedID: req.query.userFollowedID} }))[0];
 	
-	res.json(user);
+	res.json(followRecord);
+};
+
+// Get all users, user is following
+exports.allFollows = async (req, res) => {
+	const followRecords = await db.followUser.findAll({ where: { userID: req.query.userID } });
+	
+	res.json(followRecords);
 };
 
 // Follow a user
 exports.follow = async (req, res) => {
-	const user = await db.followUser.create({
+	const followRecord = await db.followUser.create({
 		userID: req.body.userID,
 		userFollowedID: req.body.userFollowedID
 	});
 	
-	res.json(user);
+	res.json(followRecord);
 };
 
 // Unfollow the user

@@ -102,6 +102,13 @@ async function isUserFollowed(userID, userFollowedID) {
     return false;
 }
 
+async function getUserFollows(userID) {
+    const response = await axios.get(API_HOST + "/api/follows/all", { params: { userID } });
+    const followRecords = response.data;
+
+    return followRecords;
+}
+
 // --- Helper Functions ---------------------------------------------------------------------------------------
 // Return a pre-formatted date when a user registers their account
 function dateFormatter() {
@@ -310,7 +317,7 @@ export {
     deleteUser,
     updateUserProfile,
     updateProfilePic,
-    followUser, isUserFollowed,
+    followUser, isUserFollowed, getUserFollows,
     validPassword,
     validEmail,
     verifyUser,
