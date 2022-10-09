@@ -3,7 +3,7 @@ import { getUserByID } from "../Util";
 export default function Comment(props) {
 
     // Obtain user by ID
-    const user = getUserByID(props.uid)
+    const user = getUserByID(props.userID)
 
     return (
         <>

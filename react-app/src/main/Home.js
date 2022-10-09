@@ -43,7 +43,7 @@ export default function Home(props) {
                     threads.map((thread) =>
                         <Thread
                             key={thread.tid}
-                            uid={thread.uid}
+                            userID={thread.userID}
                             tid={thread.tid}
                             post={thread.post}
                             postDate={thread.postDate}
