@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getUserByID, newComment, getCommentsByID } from "../Util";
+import { useNavigate } from "react-router-dom";
 import Comment from "./Comment";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -10,6 +11,9 @@ export default function Thread(props) {
 
     const [comment, setComment] = useState("")
     const [errorMessage, setErrorMessage] = useState(null)
+    const [user, setUser] = useState(null)
+
+	const navigate = useNavigate();
 
     // Fill form elements with current thread data.
     const resetInputs = {
@@ -25,6 +29,15 @@ export default function Thread(props) {
     useEffect(() => {
         setShowThread(true)
     }, [props]);
+
+    // Obtain user by ID
+    useEffect(() => {
+        const fetchUser = async () => {
+            const user = await getUserByID(props.userID)
+            setUser(user)
+        }
+        fetchUser()
+    }, [])
 
     // Hide the component if the thread was deleted.
     if (showThread === false) {
@@ -65,9 +78,12 @@ export default function Thread(props) {
         setErrorMessage(null)
     }
 
-    // Obtain user by ID
-    const user = getUserByID(props.uid)
-
+    // View Profile of User
+    const viewProfile = (event) => {
+        event.preventDefault();
+        navigate("/profile", { state: { user: user } });
+    }
+ 
     // Get all comments by thread ID
     let comments = getCommentsByID(props.tid)
 
@@ -82,11 +98,13 @@ export default function Thread(props) {
                     {/* Start of thread row */}
                     <div className="row">
                         <div className="col-sm-1">
-                            <img className="card-img rounded-circle profile-pic mx-4 my-3 border" src={user.profilePic} />
+                            <img className="card-img rounded-circle profile-pic mx-4 my-3 border" src={user != null ? user.profilePic : ""} />
                         </div>
                         <div className="col-sm-11 main-textarea">
                             <div className="card-body mx-5 mt-1 thread-body">
-                                <h5 className="card-title pt-1">{user.name}
+                                <h5 className="card-title pt-1">{user != null ?
+                                    <a href="" onClick={viewProfile} className="profile-link"
+                                        >{user.name}</a> : ""}
                                     <span className="text-muted thread-date"> · {props.postDate}  </span>
                                     <EditIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#edit-post-modal" + props.tid} style={{ color: 'grey', fontSize: 20 }} />
                                     <DeleteIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#delete-post-modal" + props.tid} style={{ color: 'grey', fontSize: 20 }} />
@@ -107,7 +125,7 @@ export default function Thread(props) {
                                 <Comment
                                     key={comment.cid}
                                     cid={comment.cid}
-                                    uid={comment.uid}
+                                    userID={comment.userID}
                                     tid={comment.tid}
                                     commentText={comment.commentText}
                                     postDate={comment.postDate}

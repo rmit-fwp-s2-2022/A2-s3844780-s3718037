@@ -68,10 +68,45 @@ async function updateProfilePic(userID, profilePic) {
     const response = await axios.put(API_HOST + "/api/profiles/update", { userID, profilePic });
     const user = response.data;
 
-    console.log(user);
-
     // Update user
     localStorage.setItem(USER_DATA, JSON.stringify(user));
+}
+
+// --- Follow ---------------------------------------------------------------------------------------
+async function followUser(userID, userFollowedID, isFollowing) {
+    if (isFollowing)
+    {
+        // Follow User
+        const response = await axios.post(API_HOST + "/api/follows", { userID, userFollowedID });
+        const data = response.data;
+
+        return true;
+    }
+    else
+    {
+        // Unfollow User
+        const response = await axios.delete(API_HOST + "/api/follows", { data: { userID, userFollowedID } });
+        const data = response.data;
+
+        return false;
+    }
+}
+
+async function isUserFollowed(userID, userFollowedID) {
+    const response = await axios.get(API_HOST + "/api/follows", { params: { userID, userFollowedID } });
+    const user = response.data;
+
+    if (user !== undefined && user !== null && user !== "")
+        return true;
+    
+    return false;
+}
+
+async function getUserFollows(userID) {
+    const response = await axios.get(API_HOST + "/api/follows/all", { params: { userID } });
+    const followRecords = response.data;
+
+    return followRecords;
 }
 
 // --- Helper Functions ---------------------------------------------------------------------------------------
@@ -113,11 +148,11 @@ function getUsers() {
     return JSON.parse(localStorage.getItem(USERS));
 }
 
-function getUserByID(uid) {
-    const users = getUsers();
-    if (users !== null) {
-        return users.find(user => user.uid === uid)
-    }
+async function getUserByID(userID) {
+    const response = await axios.get(API_HOST + "/api/users/select/" + userID);
+    const user = response.data;
+
+    return user;
 }
 
 function getThreads() {
@@ -146,10 +181,10 @@ function getCommentsByID(tid) {
 }
 
 // Return a whole array of threads related to the same user.
-function getAllThreadsByID(uid) {
+function getAllThreadsByID(userID) {
     const threads = getThreads();
     if (threads !== null) {
-        return threads.filter(thread => thread.tid === uid);
+        return threads.filter(thread => thread.tid === userID);
     }
 }
 
@@ -175,7 +210,7 @@ function newThread(post, postPic) {
     const postDate = dateFormatter()
 
     // Create individual thread
-    const thread = { uid: currentUser.uid, tid: tid, post: post, postDate: postDate, postPic: postPic };
+    const thread = { userID: currentUser.userID, tid: tid, post: post, postDate: postDate, postPic: postPic };
 
     if (threads === null)
         threads = [];
@@ -208,7 +243,7 @@ function newComment(tid, commentText) {
     const postDate = dateFormatter()
 
     // Create individual comment
-    const comment = { uid: currentUser.uid, tid: tid, cid: cid, commentText: commentText, postDate: postDate };
+    const comment = { userID: currentUser.userID, tid: tid, cid: cid, commentText: commentText, postDate: postDate };
 
     if (comments === null)
         comments = [];
@@ -259,18 +294,18 @@ function deleteThread(tid) {
 }
 
 // Delete a thread and all associated comments from a user's ID
-function deleteAllPostsById(uid) {
+function deleteAllPostsById(userID) {
     // Get threads
     let threads = getThreads();
     // Remove thread from list
-    threads = threads.filter((value) => value.uid !== uid);
+    threads = threads.filter((value) => value.userID !== userID);
     // Update threads
     localStorage.setItem(THREADS, JSON.stringify(threads));
 
     //Get comments
     let comments = getComments();
     // Remove comments from list
-    comments = comments.filter((value) => value.uid !== uid);
+    comments = comments.filter((value) => value.userID !== userID);
     // Update threads
     localStorage.setItem(COMMENTS, JSON.stringify(comments));
 }
@@ -282,6 +317,7 @@ export {
     deleteUser,
     updateUserProfile,
     updateProfilePic,
+    followUser, isUserFollowed, getUserFollows,
     validPassword,
     validEmail,
     verifyUser,
