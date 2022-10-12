@@ -57,11 +57,19 @@ async function deleteUser(user) {
 }
 
 async function updateUserProfile(userID, name, email, password) {
-    await axios.put(API_HOST + "/api/profiles/update", { userID, name, email, password });
+    const response = await axios.put(API_HOST + "/api/profiles/update", { userID, name, email, password });
+    const user = response.data;
+
+    // Update user
+    localStorage.setItem(USER_DATA, JSON.stringify(user));
 }
 
 async function updateProfilePic(userID, profilePic) {
-    await axios.put(API_HOST + "/api/profiles/update", { userID, profilePic });
+    const response = await axios.put(API_HOST + "/api/profiles/update", { userID, profilePic });
+    const user = response.data;
+
+    // Update user
+    localStorage.setItem(USER_DATA, JSON.stringify(user));
 }
 
 // --- Follow Functionality ---------------------------------------------------------------------------------------
