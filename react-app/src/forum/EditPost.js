@@ -4,7 +4,7 @@ import { getThreadsByID, updatePost } from "../Util";
 export default function EditPost(props) {
 
     // Obtain thread by ID
-    const thread = getThreadsByID(props.tid)
+    const thread = getThreadsByID(props.threadID)
 
     // Fill form elements with current thread data.
     const resetInputs = {
@@ -28,10 +28,10 @@ export default function EditPost(props) {
         event.preventDefault();
 
         // Update the post
-        updatePost(props.tid, inputs.post, inputs.postPic)
+        updatePost(props.threadID, inputs.post, inputs.postPic)
 
         // Close the modal
-        const closeBTN = "edit-post-btn-close" + props.tid
+        const closeBTN = "edit-post-btn-close" + props.threadID
         document.getElementById(closeBTN).click();
 
         // Pass inputs to parent component
@@ -39,12 +39,12 @@ export default function EditPost(props) {
     }
 
     return (
-        <div className="modal fade" id={"edit-post-modal" + props.tid} data-bs-backdrop="static" tabIndex="-1" >
+        <div className="modal fade" id={"edit-post-modal" + props.threadID} data-bs-backdrop="static" tabIndex="-1" >
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="edit-post-modal-label">Edit Post</h5>
-                        <button type="button" id={"edit-post-btn-close" + props.tid} className="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" id={"edit-post-btn-close" + props.threadID} className="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div className="modal-body">
                         <form onSubmit={editThread}>

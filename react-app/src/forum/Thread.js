@@ -13,7 +13,7 @@ export default function Thread(props) {
     const [errorMessage, setErrorMessage] = useState(null)
     const [user, setUser] = useState(null)
 
-	const navigate = useNavigate();
+    const navigate = useNavigate();
 
     // Fill form elements with current thread data.
     const resetInputs = {
@@ -62,16 +62,16 @@ export default function Thread(props) {
             return
         }
 
-        // Set error if post exceeds 250 characters.
-        if (commentTrimmed.length > 250) {
-            const overLimit = commentTrimmed.length - 250
+        // Set error if post exceeds 600 characters.
+        if (commentTrimmed.length > 600) {
+            const overLimit = commentTrimmed.length - 600
             const characterPostfix = overLimit === 1 ? "character" : "characters"
             setErrorMessage("You are " + overLimit + " " + characterPostfix + " over the character limit.")
             return
         }
 
         // Create a new comment
-        newComment(props.tid, commentTrimmed)
+        newComment(props.threadID, commentTrimmed)
 
         // Reset post content and error message.
         setComment("")
@@ -83,16 +83,16 @@ export default function Thread(props) {
         event.preventDefault();
         navigate("/profile", { state: { user: user } });
     }
- 
+
     // Get all comments by thread ID
-    let comments = getCommentsByID(props.tid)
+    let comments = getCommentsByID(props.threadID)
 
     return (
         <>
             {/* Edit thread */}
-            <EditPost tid={props.tid} passPost={setInputs} />
+            <EditPost threadID={props.threadID} passPost={setInputs} />
             {/* Delete thread */}
-            <DeletePost tid={props.tid} passShowThread={setShowThread} />
+            <DeletePost threadID={props.threadID} passShowThread={setShowThread} />
             <div className="container mb-3">
                 <div className="card mx-auto thread-card border-0" style={{ width: '800px' }}>
                     {/* Start of thread row */}
@@ -104,10 +104,10 @@ export default function Thread(props) {
                             <div className="card-body mx-5 mt-1 thread-body">
                                 <h5 className="card-title pt-1">{user != null ?
                                     <a href="" onClick={viewProfile} className="profile-link"
-                                        >{user.name}</a> : ""}
+                                    >{user.name}</a> : ""}
                                     <span className="text-muted thread-date"> · {props.postDate}  </span>
-                                    <EditIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#edit-post-modal" + props.tid} style={{ color: 'grey', fontSize: 20 }} />
-                                    <DeleteIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#delete-post-modal" + props.tid} style={{ color: 'grey', fontSize: 20 }} />
+                                    <EditIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#edit-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
+                                    <DeleteIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#delete-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
                                 </h5>
                                 <p className="card-subtitle pt-1">{inputs.post}</p>
                                 {
@@ -126,7 +126,7 @@ export default function Thread(props) {
                                     key={comment.cid}
                                     cid={comment.cid}
                                     userID={comment.userID}
-                                    tid={comment.tid}
+                                    threadID={comment.threadID}
                                     commentText={comment.commentText}
                                     postDate={comment.postDate}
                                 />

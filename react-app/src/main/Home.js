@@ -19,7 +19,6 @@ export default function Home(props) {
     // List of all user follows
     const [userFollows, setUserFollows] = useState(null);
 
-
     useEffect(() => {
         const getFollows = async () => {
             const followRecords = await getUserFollows(props.user.userID);
@@ -57,20 +56,19 @@ export default function Home(props) {
                     </div>
                     :
                     threads.map((thread) => {
-                        if (filter === "followed") 
-                        {
+                        if (filter === "followed") {
                             if (!userFollows.includes(thread.userID))
                                 return;
                         }
 
                         return <Thread
-                            key={thread.tid}
+                            key={thread.threadID}
                             userID={thread.userID}
-                            tid={thread.tid}
+                            threadID={thread.threadID}
                             post={thread.post}
                             postDate={thread.postDate}
                             postPic={thread.postPic}
-                            />
+                        />
                     })
             }
             {/* Upload Image */}
