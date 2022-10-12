@@ -1,13 +1,13 @@
-const db = require("../database"); tidth
+const db = require("../database");
 
 
 
 // Create a comment in the database.
 exports.create = async (req, res) => {
   const comment = await db.comment.create({
-    post: req.body.post,
-    postPic: req.body.postPic,
-    userID: req.body.currentUserID
+    commentText: req.body.commentText,
+    userID: req.body.currentUserID,
+    threadID: req.body.threadID
   });
 
   res.json(comment);
@@ -25,4 +25,11 @@ exports.one = async (req, res) => {
   const comment = await db.comment.findByPk(req.params.id);
 
   res.json(comment);
+};
+
+// Select all comment from the database using threadID.
+exports.allByThreadID = async (req, res) => {
+  const allComments = await db.comment.findAll({ where: { threadID: req.query.threadID } });
+
+  res.json(allComments);
 };

@@ -9,9 +9,14 @@ import DeletePost from "./DeletePost";
 
 export default function Thread(props) {
 
+    // Used for updating individual comments
     const [comment, setComment] = useState("")
+    // Get and set all comments
+    const [comments, setComments] = useState("");
     const [errorMessage, setErrorMessage] = useState(null)
     const [user, setUser] = useState(null)
+    // Allow comments to be returned before displaying them
+    const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
 
@@ -38,6 +43,23 @@ export default function Thread(props) {
         }
         fetchUser()
     }, [])
+
+    // Get all comments by thread ID
+    //let comments = getCommentsByID(props.threadID)
+
+    // Get all comments by thread ID
+    useEffect(() => {
+        async function loadComments() {
+            const allComments = await getCommentsByID(props.threadID);
+
+            setComments(allComments);
+            setIsLoading(false);
+        }
+
+        loadComments();
+    }, []);
+
+
 
     // Hide the component if the thread was deleted.
     if (showThread === false) {
@@ -84,8 +106,6 @@ export default function Thread(props) {
         navigate("/profile", { state: { user: user } });
     }
 
-    // Get all comments by thread ID
-    let comments = getCommentsByID(props.threadID)
 
     return (
         <>
@@ -121,16 +141,17 @@ export default function Thread(props) {
                     {/* Comments */}
                     {
                         comments === null || comments === undefined ? "" :
-                            comments.map((comment) =>
-                                <Comment
-                                    key={comment.cid}
-                                    cid={comment.cid}
-                                    userID={comment.userID}
-                                    threadID={comment.threadID}
-                                    commentText={comment.commentText}
-                                    postDate={comment.postDate}
-                                />
-                            )
+                            isLoading ? <div></div> :
+                                comments.map((comment) =>
+                                    <Comment
+                                        key={comment.commentID}
+                                        commentID={comment.commentID}
+                                        userID={comment.userID}
+                                        threadID={comment.threadID}
+                                        commentText={comment.commentText}
+                                        postDate={comment.postDate}
+                                    />
+                                )
                     }
                     {/* End of thread row */}
                     <form onSubmit={userComment}>

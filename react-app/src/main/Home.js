@@ -14,10 +14,14 @@ export default function Home(props) {
     const [postURL, setPostURL] = useState("");
     // Obtain post message
     const [postMSG, setPostMSG] = useState(null);
+    // Get and set all threads
+    const [threads, setThreads] = useState("");
     // Filter Threads
     const [filter, setFilter] = useState("all");
     // List of all user follows
     const [userFollows, setUserFollows] = useState(null);
+    // Allow Threads to be returned before displaying them
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const getFollows = async () => {
@@ -38,7 +42,21 @@ export default function Home(props) {
     }
 
     // Obtain all threads
-    let threads = getThreads()
+    //let threads = getThreads()
+
+
+    // Obtain all threads.
+    useEffect(() => {
+        async function loadThreads() {
+            const allThreads = await getThreads();
+
+            setThreads(allThreads);
+            setIsLoading(false);
+        }
+
+        loadThreads();
+    }, []);
+
 
     return (
         <>
@@ -55,21 +73,23 @@ export default function Home(props) {
                         </div>
                     </div>
                     :
-                    threads.map((thread) => {
-                        if (filter === "followed") {
-                            if (!userFollows.includes(thread.userID))
-                                return;
-                        }
+                    isLoading ? <div></div> :
+                        threads.map((thread) => {
+                            if (filter === "followed") {
+                                if (!userFollows.includes(thread.userID))
+                                    return;
+                            }
 
-                        return <Thread
-                            key={thread.threadID}
-                            userID={thread.userID}
-                            threadID={thread.threadID}
-                            post={thread.post}
-                            postDate={thread.postDate}
-                            postPic={thread.postPic}
-                        />
-                    })
+                            return <Thread
+                                key={thread.threadID}
+                                userID={thread.userID}
+                                threadID={thread.threadID}
+                                post={thread.post}
+                                postDate={thread.postDate}
+                                postPic={thread.postPic}
+                            />
+                        })
+
             }
             {/* Upload Image */}
             <AddImage passPostURL={setPostURL} />

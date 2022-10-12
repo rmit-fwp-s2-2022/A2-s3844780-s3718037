@@ -5,6 +5,9 @@ module.exports = (express, app) => {
   // Select all comments.
   router.get("/", controller.all);
 
+  // Select all comments based of threadID
+  router.get("/all", controller.allByThreadID);
+
   // Select a single comment based on ID.
   router.get("/select/:id", controller.one);
 
