@@ -109,6 +109,14 @@ async function getUserFollows(userID) {
     return followRecords;
 }
 
+async function getAllUsers()
+{
+    const response = await axios.get(API_HOST + "/api/users");
+    const users = response.data;
+
+    return users;
+}
+
 // --- Helper Functions ---------------------------------------------------------------------------------------
 // Return a pre-formatted date when a user registers their account
 function dateFormatter() {
@@ -317,7 +325,7 @@ export {
     deleteUser,
     updateUserProfile,
     updateProfilePic,
-    followUser, isUserFollowed, getUserFollows,
+    followUser, isUserFollowed, getUserFollows, getAllUsers,
     validPassword,
     validEmail,
     verifyUser,

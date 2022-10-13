@@ -12,7 +12,6 @@ import Login from "./registration/Login";
 import MultiFactorAuthentication from './registration/MultiFactorAuthentication';
 import SignUp from "./registration/SignUp";
 import ViewProfile from "./profile/ViewProfile.js";
-import DisplayFollows from "./profile/DisplayFollows.js";
 import EditProfile from './profile/EditProfile';
 import DeleteProfile from './profile/DeleteProfile';
 import AddImage from './forum/AddImage';
@@ -65,7 +64,6 @@ export default function App() {
 				<Route path="/profile" element={
 					<>
 						<ViewProfile user={user} />
-						<DisplayFollows /> 
 					</> } />
 			</Routes>
 			<Login setUserLoginData={setUserLoginData} />
