@@ -10,10 +10,6 @@ export default function EditPost(props) {
     const [thread, setThread] = useState("");
 
     // Obtain thread by ID
-    //const thread = getThreadsByID(props.threadID)
-
-
-    // Obtain thread by ID
     useEffect(() => {
         async function loadThreadByID() {
             // const allThreads = await getThreads();
@@ -23,27 +19,20 @@ export default function EditPost(props) {
             // setIsLoading(false);
         }
         loadThreadByID();
+
         // Reset change useState
         setChange(false)
     }, [change]);
 
 
 
-    // Fill form elements with current thread data.
-    const resetInputs = {
-        post: thread.post,
-        postPic: thread.postPic
-    };
-
-    const [inputs, setInputs] = useState(resetInputs)
-
     // Obtain and set current state of inputs
     const inputChange = (event) => {
         const name = event.target.name
         const value = event.target.value
-        const copyInputs = { ...inputs }
+        const copyInputs = { ...thread }
         copyInputs[name] = value
-        setInputs(copyInputs)
+        setThread(copyInputs)
     }
 
     const editThread = (event) => {
@@ -51,14 +40,14 @@ export default function EditPost(props) {
         event.preventDefault();
 
         // Update the post
-        updatePost(props.threadID, inputs.post, inputs.postPic)
+        updatePost(props.threadID, thread.post, thread.postPic)
 
         // Close the modal
         const closeBTN = "edit-post-btn-close" + props.threadID
         document.getElementById(closeBTN).click();
 
         // Pass inputs to parent component
-        props.passPost(inputs)
+        props.passPost(thread)
 
         setChange(true)
     }
@@ -75,11 +64,11 @@ export default function EditPost(props) {
                         <form onSubmit={editThread}>
                             <div className="mb-3">
                                 <label htmlFor="post" className="form-label" >Edit Text</label>
-                                <textarea name="post" id="post" defaultValue={inputs.post} className="form-control" placeholder="Post a message..." rows="2" onChange={inputChange} required></textarea>
+                                <textarea name="post" id="post" defaultValue={thread.post} className="form-control" placeholder="Post a message..." rows="2" onChange={inputChange} required></textarea>
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="postPic" className="form-label" >Edit Image URL</label>
-                                <input name="postPic" type="url" className="form-control" id="edit-post-link" onChange={inputChange} defaultValue={inputs.postPic} placeholder="Please enter the URL of an image..." />
+                                <input name="postPic" type="url" className="form-control" id="edit-post-link" onChange={inputChange} defaultValue={thread.postPic} placeholder="Please enter the URL of an image..." />
                             </div>
                             <div className="modal-footer px-0 py-0 border-0">
                                 <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>

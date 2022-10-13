@@ -291,22 +291,27 @@ async function newComment(threadID, commentText) {
 }
 
 // Edit/Update post.
-function updatePost(tid, post, postPic) {
+async function updatePost(threadID, post, postPic) {
 
-    // Get thread info
-    let threads = getThreads();
 
-    for (let i = 0; i < threads.length; i++) {
-        if (threads[i].tid === tid) {
+    //  "/api/profiles/update", { userID, name, email, password });
 
-            // Update details in list
-            threads[i].post = post;
-            threads[i].postPic = postPic;
-            break;
-        }
-    }
-    // Update threads
-    localStorage.setItem(THREADS, JSON.stringify(threads));
+    await axios.put(API_HOST + "/api/threads/update", { threadID, post, postPic });
+
+    // // Get thread info
+    // let threads = getThreads();
+
+    // for (let i = 0; i < threads.length; i++) {
+    //     if (threads[i].tid === tid) {
+
+    //         // Update details in list
+    //         threads[i].post = post;
+    //         threads[i].postPic = postPic;
+    //         break;
+    //     }
+    // }
+    // // Update threads
+    // localStorage.setItem(THREADS, JSON.stringify(threads));
     //console.log("Updated!")
 }
 

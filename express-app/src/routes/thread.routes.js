@@ -14,6 +14,9 @@ module.exports = (express, app) => {
   // Delete thread
   router.delete("/delete/:id", controller.deleteThread);
 
+  // Update thread
+  router.put("/update", controller.update);
+
   // Add routes to server.
   app.use("/api/threads", router);
 };
