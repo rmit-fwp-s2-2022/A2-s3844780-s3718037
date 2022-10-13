@@ -40,7 +40,6 @@ export default function EditProfile(props) {
             value = value.replace(NAME_REGEX, "");
             document.querySelector("#edit-profile-name").value = value;
         }
-
         setInputs({ ...inputs, [name]: value });
     }
 
@@ -87,8 +86,6 @@ export default function EditProfile(props) {
         else
             setErrorMessage("Email address already used");
     }
-
-
 
     const profilePicChange = (event) => {
         const value = event.target.value;

@@ -9,9 +9,6 @@ export default function Comment(props) {
     const [isLoading, setIsLoading] = useState(true);
 
     // Obtain user by ID
-    //setUser(getUserByID(props.userID))
-
-    // Obtain user by ID
     useEffect(() => {
         const fetchUser = async () => {
             const user = await getUserByID(props.userID)
@@ -20,12 +17,6 @@ export default function Comment(props) {
         }
         fetchUser()
     }, [])
-
-
-    // console.log("test1")
-    // console.log(props.userID)
-    // console.log("test2")
-    // console.log(user.name)
 
 
     return (

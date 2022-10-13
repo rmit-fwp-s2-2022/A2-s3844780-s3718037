@@ -149,14 +149,8 @@ async function getUsers() {
 
 // Return a single user by ID
 async function getUserByID(userID) {
-    //const response = await axios.get(API_HOST + "/api/users/select/" + userID);
     const response = await axios.get(API_HOST + `/api/users/select/${userID}`);
-    // const user = response.data;
-
-    // console.log(response.data)
-
     return response.data;
-
 }
 
 
@@ -169,179 +163,59 @@ async function getThreads() {
 
 // Return a thread from its ID.
 async function getThreadsByID(threadID) {
-    // const threads = getThreads();
-    // if (threads !== null) {
-    //     return threads.find(thread => thread.tid === tid)
-    // }
-
     const response = await axios.get(API_HOST + `/api/threads/select/${threadID}`);
-
     return response.data;
-
-
-    // const response = await axios.get(API_HOST + "/api/threads/" + threadID);
-
 }
 
 // Return all comments.
 async function getComments() {
-    // return JSON.parse(localStorage.getItem(COMMENTS));
-
     const response = await axios.get(API_HOST + "/api/comments");
     return response.data;
-
 }
 
 // Return a whole array of comments related to the same thread.
 async function getCommentsByID(threadID) {
-
-    // const comments = getComments();
-    // if (comments !== null) {
-    //     return comments.filter(thread => thread.threadID === threadID);
-    // }
-
-    // SIMILAR TO FOLLOW CODE!
-
     const response = await axios.get(API_HOST + "/api/comments/all", { params: { threadID } });
     return response.data;
-
 }
-
-
-
 
 // Save new thread details to localstorage, return individual thread.
 async function newThread(post, postPic) {
 
-    // // Obtain all threads
-    // let threads = getThreads()
-
-    // // Assign a thread ID
-    // let tid = null
-    // if (threads !== null) {
-    //     // Obtain a new unique thread ID (tid)
-    //     tid = Math.max(...threads.map(thread => thread.tid)) + 1
-    // } else {
-    //     tid = 1
-    // }
-
     // Obtain current user ID
     const currentUser = getUserInfo()
     const currentUserID = currentUser.userID
-    // const postDate = dateFormatter()
-
-    // Create individual thread
-    //  const thread = { userID: currentUser.userID, tid: tid, post: post, postDate: postDate, postPic: postPic };
-
-    // if (threads === null)
-    //     threads = [];
-
-    // // Add individual thread to theads array
-    // threads.push(thread);
-    // // Save threads to localstorage
-    // localStorage.setItem(THREADS, JSON.stringify(threads));
-
-
 
     const response = await axios.post(API_HOST + "/api/threads", { post, postPic, currentUserID });
     const thread = response.data;
 
     return thread
-
-
 }
 
 // Add new comment to existing thread
 async function newComment(threadID, commentText) {
 
-    //console.log(threadID)
-    //console.log(commentText)
-    // Obtain all threads
-    // let comments = getComments()
-
-    // Assign a thread ID
-    // let cid = null
-    // if (comments !== null) {
-    //     // Obtain a new unique comment ID (cid)
-    //     cid = Math.max(...comments.map(comment => comment.cid)) + 1
-    // } else {
-    //     cid = 1
-    // }
-
     // Obtain user details
     const currentUser = getUserInfo()
     const currentUserID = currentUser.userID
-    //const postDate = dateFormatter()
-
-    // Create individual comment
-    // const comment = { userID: currentUser.userID, tid: tid, cid: cid, commentText: commentText, postDate: postDate };
-
-    // if (comments === null)
-    //     comments = [];
-
-    // // Add individual thread to theads array
-    // comments.push(comment);
-    // // Save threads to localstorage
-    // localStorage.setItem(COMMENTS, JSON.stringify(comments));
 
     const response = await axios.post(API_HOST + "/api/comments", { commentText, currentUserID, threadID });
     const comment = response.data;
-
     return comment
 }
 
 // Edit/Update post.
 async function updatePost(threadID, post, postPic) {
-
-
-    //  "/api/profiles/update", { userID, name, email, password });
-
     await axios.put(API_HOST + "/api/threads/update", { threadID, post, postPic });
-
-    // // Get thread info
-    // let threads = getThreads();
-
-    // for (let i = 0; i < threads.length; i++) {
-    //     if (threads[i].tid === tid) {
-
-    //         // Update details in list
-    //         threads[i].post = post;
-    //         threads[i].postPic = postPic;
-    //         break;
-    //     }
-    // }
-    // // Update threads
-    // localStorage.setItem(THREADS, JSON.stringify(threads));
-    //console.log("Updated!")
 }
 
 // Delete a thread and all associated comments based on thread ID
 async function deleteThread(threadID) {
 
-
-    // getCommentsByID(threadID)
-
     // Delete comments associated with the thread.
     await axios.delete(API_HOST + `/api/comments/delete/${threadID}`);
-
     // Delete the thread itself.
     await axios.delete(API_HOST + `/api/threads/delete/${threadID}`);
-
-
-    // Get threads
-    // let threads = getThreads();
-
-    // Remove thread from list
-    // threads = threads.filter((value) => value.tid !== tid);
-    // // Update threads
-    // localStorage.setItem(THREADS, JSON.stringify(threads));
-
-    //Get comments
-    // let comments = getComments();
-    // Remove comments from list
-    // comments = comments.filter((value) => value.tid !== tid);
-    // // Update threads
-    // localStorage.setItem(COMMENTS, JSON.stringify(comments));
 }
 
 // Delete a thread and all associated comments from a user's ID
@@ -349,23 +223,8 @@ async function deleteAllPostsById(userID) {
 
     // Delete comments associated with the thread.
     await axios.delete(API_HOST + `/api/comments/deleteFromUserID/${userID}`);
-
     // Delete the thread itself.
     await axios.delete(API_HOST + `/api/threads/deleteFromUserID/${userID}`);
-
-    // // Get threads
-    // let threads = getThreads();
-    // // Remove thread from list
-    // threads = threads.filter((value) => value.userID !== userID);
-    // // Update threads
-    // localStorage.setItem(THREADS, JSON.stringify(threads));
-
-    // //Get comments
-    // let comments = getComments();
-    // // Remove comments from list
-    // comments = comments.filter((value) => value.userID !== userID);
-    // // Update threads
-    // localStorage.setItem(COMMENTS, JSON.stringify(comments));
 }
 
 

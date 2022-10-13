@@ -46,7 +46,7 @@ export default function Thread(props) {
         fetchUser()
     }, [])
 
-
+    // Update change state
     const handleClick = event => {
         setChange(true);
     };
@@ -64,8 +64,6 @@ export default function Thread(props) {
         // Reset change useState
         setChange(false)
     }, [change]);
-
-
 
     // Hide the component if the thread was deleted.
     if (showThread === false) {

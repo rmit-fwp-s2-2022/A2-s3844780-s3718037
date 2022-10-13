@@ -5,26 +5,20 @@ export default function EditPost(props) {
 
     // Allow edit post modal to re-render upon change.
     const [change, setChange] = useState(false);
-
     // Get and set current thread
     const [thread, setThread] = useState("");
 
     // Obtain thread by ID
     useEffect(() => {
         async function loadThreadByID() {
-            // const allThreads = await getThreads();
             const individualThread = await getThreadsByID(props.threadID)
 
             setThread(individualThread);
-            // setIsLoading(false);
         }
         loadThreadByID();
-
         // Reset change useState
         setChange(false)
     }, [change]);
-
-
 
     // Obtain and set current state of inputs
     const inputChange = (event) => {
@@ -38,19 +32,17 @@ export default function EditPost(props) {
     const editThread = (event) => {
         // Prevent page from refreshing/reloading
         event.preventDefault();
-
         // Update the post
         updatePost(props.threadID, thread.post, thread.postPic)
-
         // Close the modal
         const closeBTN = "edit-post-btn-close" + props.threadID
         document.getElementById(closeBTN).click();
-
         // Pass inputs to parent component
         props.passPost(thread)
-
+        // Update change state
         setChange(true)
     }
+
 
     return (
         <div className="modal fade" id={"edit-post-modal" + props.threadID} data-bs-backdrop="static" tabIndex="-1" >
