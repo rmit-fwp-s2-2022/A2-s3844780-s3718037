@@ -9,7 +9,7 @@ import DeletePost from "./DeletePost";
 
 export default function Thread(props) {
 
-    // Used for updating individual comments
+    // Used for creating individual comments
     const [comment, setComment] = useState("")
     // Get and set all comments
     const [comments, setComments] = useState("");
@@ -74,7 +74,7 @@ export default function Thread(props) {
         setComment(event.target.value)
     }
 
-    // Create a new comment
+    // Initiate creating a new comment
     const userComment = (event) => {
         // Prevent page from refreshing/reloading
         event.preventDefault();
@@ -109,6 +109,24 @@ export default function Thread(props) {
         event.preventDefault();
         navigate("/profile", { state: { user: user } });
     }
+
+    // // Create a new comment and then cause a re-render
+    // useEffect(() => {
+    //     const createNewThread = async () => {
+    //         // Create a new thread
+    //         await newThread(postMSG, postURL)
+    //         // Reset post message state to null
+    //         setPostMSG(null)
+    //         // Reset post imageURL state to emplty
+    //         setPostURL("")
+    //         // Update state to cause threads to be re-rendered
+    //         setChange(true)
+
+    //     }
+    //     if (postMSG !== null) {
+    //         createNewThread();
+    //     }
+    // }, [])
 
 
     return (

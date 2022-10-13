@@ -184,11 +184,9 @@ async function newThread(post, postPic) {
     // Obtain current user ID
     const currentUser = getUserInfo()
     const currentUserID = currentUser.userID
+    await axios.post(API_HOST + "/api/threads", { post, postPic, currentUserID });
 
-    const response = await axios.post(API_HOST + "/api/threads", { post, postPic, currentUserID });
-    const thread = response.data;
-
-    return thread
+    return true
 }
 
 // Add new comment to existing thread
