@@ -22,6 +22,8 @@ export default function Home(props) {
     const [userFollows, setUserFollows] = useState(null);
     // Allow Threads to be returned before displaying them
     const [isLoading, setIsLoading] = useState(true);
+    // Allow threads to re-render upon new thread
+    const [change, setChange] = useState(false);
 
     useEffect(() => {
         const getFollows = async () => {
@@ -39,11 +41,9 @@ export default function Home(props) {
         setPostMSG(null)
         // Reset post imageURL state to emplty
         setPostURL("")
+        // Update state to cause threads to be re-rendered
+        setChange(true)
     }
-
-    // Obtain all threads
-    //let threads = getThreads()
-
 
     // Obtain all threads.
     useEffect(() => {
@@ -53,9 +53,10 @@ export default function Home(props) {
             setThreads(allThreads);
             setIsLoading(false);
         }
-
         loadThreads();
-    }, []);
+        // Reset change useState
+        setChange(false)
+    }, [change]);
 
 
     return (

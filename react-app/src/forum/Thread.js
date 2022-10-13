@@ -17,6 +17,8 @@ export default function Thread(props) {
     const [user, setUser] = useState(null)
     // Allow comments to be returned before displaying them
     const [isLoading, setIsLoading] = useState(true);
+    // Allow comments to re-render upon new comment
+    const [change, setChange] = useState(false);
 
     const navigate = useNavigate();
 
@@ -44,8 +46,10 @@ export default function Thread(props) {
         fetchUser()
     }, [])
 
-    // Get all comments by thread ID
-    //let comments = getCommentsByID(props.threadID)
+
+    const handleClick = event => {
+        setChange(true);
+    };
 
     // Get all comments by thread ID
     useEffect(() => {
@@ -55,9 +59,10 @@ export default function Thread(props) {
             setComments(allComments);
             setIsLoading(false);
         }
-
         loadComments();
-    }, []);
+        // Reset change useState
+        setChange(false)
+    }, [change]);
 
 
 
@@ -71,6 +76,7 @@ export default function Thread(props) {
         setComment(event.target.value)
     }
 
+    // Create a new comment
     const userComment = (event) => {
         // Prevent page from refreshing/reloading
         event.preventDefault();
@@ -165,7 +171,7 @@ export default function Thread(props) {
                                 </div>
                             </div>
                             <div className="col-sm-2">
-                                <button type="submit" className="btn btn-secondary post-button px-4">Post</button>
+                                <button type="submit" onClick={handleClick} className="btn btn-secondary post-button px-4">Post</button>
                             </div>
                         </div>
                     </form>
