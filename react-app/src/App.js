@@ -61,7 +61,10 @@ export default function App() {
 						{user !== null && <Home user={user} />}
 						<Footer />
 					</>} />
-				<Route path="/profile" element={<ViewProfile user={user} />} />
+				<Route path="/profile" element={
+					<>
+						<ViewProfile user={user} />
+					</> } />
 			</Routes>
 			<Login setUserLoginData={setUserLoginData} />
 			<MultiFactorAuthentication user={user} userLogin={userLogin} userLoginData={userLoginData} />
