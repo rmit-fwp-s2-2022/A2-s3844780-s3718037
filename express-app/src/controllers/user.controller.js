@@ -1,7 +1,7 @@
 const db = require("../database");
 const argon2 = require("argon2");
 const DEFAULT_PROFILE_PIC = "https://i.imgur.com/7A1AbrN.png";
-	
+
 // Select all users from the database.
 exports.all = async (req, res) => {
 	const users = await db.user.findAll();
@@ -9,7 +9,7 @@ exports.all = async (req, res) => {
 	res.json(users);
 };
 
-// Select one from the database.
+// Select a single user from the database.
 exports.one = async (req, res) => {
 	let user = null;
 
@@ -38,13 +38,13 @@ exports.login = async (req, res) => {
 // Create a user in the database.
 exports.create = async (req, res) => {
 	const hash = await argon2.hash(req.body.password, { type: argon2.argon2id });
-	
+
 	const user = await db.user.create({
 		name: req.body.name,
 		email: req.body.email,
 		passwordHash: hash,
 		profilePic: DEFAULT_PROFILE_PIC
 	});
-	
+
 	res.json(user);
 };

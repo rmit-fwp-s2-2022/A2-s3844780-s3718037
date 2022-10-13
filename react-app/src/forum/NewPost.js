@@ -19,11 +19,11 @@ export default function NewPost(props) {
         // Trim the post text.
         const postTrimmed = post.trim()
 
-        // Set error if post exceeds 250 characters.
-        if (postTrimmed.length > 250) {
-            const overLimit = postTrimmed.length - 250
+        // Set error if post exceeds 600 characters.
+        if (postTrimmed.length > 600) {
+            const overLimit = postTrimmed.length - 600
             const characterPostfix = overLimit === 1 ? "character" : "characters"
-            setErrorMessage("You cannot submit a post that exceeds 250 characters. You are " + overLimit + " " + characterPostfix + " over.")
+            setErrorMessage("You cannot submit a post that exceeds 600 characters. You are " + overLimit + " " + characterPostfix + " over.")
             return
         }
 

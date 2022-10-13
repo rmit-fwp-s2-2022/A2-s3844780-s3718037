@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { followUser, isUserFollowed } from "../Util";
+import { followUser, isUserFollowed, dateFormatter } from "../Util";
 import { useLocation } from "react-router-dom";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -11,13 +11,11 @@ export default function Profile(props) {
 
     let user = props.user;
     let isDifferentUser = false;
-    if (location.state !== null)
-    {
-        if (location.state.user.userID !== props.user.userID)
-        {
+    if (location.state !== null) {
+        if (location.state.user.userID !== props.user.userID) {
             isDifferentUser = true
             user = location.state.user;
-        }    
+        }
     }
 
     useEffect(() => {
@@ -31,7 +29,7 @@ export default function Profile(props) {
     const handleUserFollow = async () => {
         setUserFollowed(await followUser(props.user.userID, user.userID, !userFollowed));
     }
-    
+
     return (
         <div className="container mt-3">
             <div className="card mx-auto profile-card border-0">
@@ -47,34 +45,34 @@ export default function Profile(props) {
                     </div>
                     {
                         isDifferentUser ?
-                        <>
-                            <div className="col text-center">
-                            {
-                                userFollowed
-                                ? <button type="button" className="btn btn-danger" onClick={handleUserFollow} >Unfollow</button>
-                                : <button type="button" className="btn btn-primary" onClick={handleUserFollow} >Follow</button>
-                            }
-                            </div>
-                           
-                        </>
-                        :
-                        <>
-                            <div className="col-sm-2">
-                                <div className="card-body">
-                                    <a href="#" className="btn mt-3 edit-icon" data-bs-toggle="modal" data-bs-target="#edit-profile-modal"><EditIcon style={{ fontSize: 35 }} /></a>
+                            <>
+                                <div className="col text-center">
+                                    {
+                                        userFollowed
+                                            ? <button type="button" className="btn btn-danger" onClick={handleUserFollow} >Unfollow</button>
+                                            : <button type="button" className="btn btn-primary" onClick={handleUserFollow} >Follow</button>
+                                    }
                                 </div>
-                            </div>
-                            <div className="col-sm-2">
-                                <div className="card-body profile-card-body">
-                                    <a href="#" className="btn mt-3 delete-icon" data-bs-toggle="modal" data-bs-target="#delete-profile-modal"><DeleteIcon style={{ color: 'red', fontSize: 35 }} /></a>
+
+                            </>
+                            :
+                            <>
+                                <div className="col-sm-2">
+                                    <div className="card-body">
+                                        <a href="#" className="btn mt-3 edit-icon" data-bs-toggle="modal" data-bs-target="#edit-profile-modal"><EditIcon style={{ fontSize: 35 }} /></a>
+                                    </div>
                                 </div>
-                            </div>
-                        </>
+                                <div className="col-sm-2">
+                                    <div className="card-body profile-card-body">
+                                        <a href="#" className="btn mt-3 delete-icon" data-bs-toggle="modal" data-bs-target="#delete-profile-modal"><DeleteIcon style={{ color: 'red', fontSize: 35 }} /></a>
+                                    </div>
+                                </div>
+                            </>
                     }
 
                 </div>
                 <div className="card-footer profile-card border-top-0 pt-0">
-                    <small className="text-muted ">Joined: {user.joinDate}</small>
+                    <small className="text-muted ">Joined: {dateFormatter(user.createdAt)}</small>
                 </div>
             </div>
         </div>
