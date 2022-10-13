@@ -19,6 +19,8 @@ export default function Thread(props) {
     const [isLoading, setIsLoading] = useState(true);
     // Allow comments to re-render upon new comment
     const [change, setChange] = useState(false);
+    // Allow new comments to be created before re-render
+    const [createComment, setCreateComment] = useState(false);
 
     const navigate = useNavigate();
 
@@ -46,10 +48,79 @@ export default function Thread(props) {
         fetchUser()
     }, [])
 
+    // Stop a comment from being created if it breaks specific rules
+    function errorCheck() {
+
+        // Trim the post text.
+        const commentTrimmed = comment.trim()
+
+        // Set error if post is empty.
+        if (commentTrimmed === "") {
+            setErrorMessage("Comment cannot be left blank.")
+            // Reset the createComment state
+            setCreateComment(false);
+            return true
+        }
+
+        // Set error if post exceeds 600 characters.
+        if (commentTrimmed.length > 600) {
+            const overLimit = commentTrimmed.length - 600
+            const characterPostfix = overLimit === 1 ? "character" : "characters"
+            setErrorMessage("You are " + overLimit + " " + characterPostfix + " over the character limit.")
+            // Reset the createComment state
+            setCreateComment(false);
+            return true
+        }
+        return false
+    }
+
+    // Create a new comment and then cause a re-render
+    useEffect(() => {
+        const createNewComment = async () => {
+
+            // Trim the post text.
+            const commentTrimmed = comment.trim()
+
+            // Create a new comment
+            newComment(props.threadID, commentTrimmed)
+
+            // Reset post content and error message.
+            setComment("")
+            setErrorMessage(null)
+
+            // Display the comments after loading
+            setIsLoading(false);
+
+            // Allow comments to re-render
+            setChange(true)
+
+            // Reset the createComment state
+            setCreateComment(false);
+
+        }
+        if (createComment === true) {
+            createNewComment();
+        }
+    }, [createComment])
+
+
+    //    }, [postMSG, postURL])
+
+
+
+
     // Update change state
     const handleClick = event => {
-        setChange(true);
+
+        if (errorCheck() === false) {
+            // Trigger new comment to be created
+            setCreateComment(true);
+            // Hide comments while loading
+            setIsLoading(true);
+        }
     };
+
+
 
     // Get all comments by thread ID
     useEffect(() => {
@@ -57,6 +128,7 @@ export default function Thread(props) {
             const allComments = await getCommentsByID(props.threadID);
 
             setComments(allComments);
+            // Display the comments after loading
             setIsLoading(false);
         }
         loadComments();
@@ -74,59 +146,25 @@ export default function Thread(props) {
         setComment(event.target.value)
     }
 
+
+
+
     // Initiate creating a new comment
     const userComment = (event) => {
         // Prevent page from refreshing/reloading
         event.preventDefault();
 
-        // Trim the post text.
-        const commentTrimmed = comment.trim()
-
-        // Set error if post is empty.
-        if (commentTrimmed === "") {
-            setErrorMessage("Comment cannot be left blank.")
-            return
-        }
-
-        // Set error if post exceeds 600 characters.
-        if (commentTrimmed.length > 600) {
-            const overLimit = commentTrimmed.length - 600
-            const characterPostfix = overLimit === 1 ? "character" : "characters"
-            setErrorMessage("You are " + overLimit + " " + characterPostfix + " over the character limit.")
-            return
-        }
-
-        // Create a new comment
-        newComment(props.threadID, commentTrimmed)
-
-        // Reset post content and error message.
-        setComment("")
-        setErrorMessage(null)
     }
+
+
+
+
 
     // View Profile of User
     const viewProfile = (event) => {
         event.preventDefault();
         navigate("/profile", { state: { user: user } });
     }
-
-    // // Create a new comment and then cause a re-render
-    // useEffect(() => {
-    //     const createNewThread = async () => {
-    //         // Create a new thread
-    //         await newThread(postMSG, postURL)
-    //         // Reset post message state to null
-    //         setPostMSG(null)
-    //         // Reset post imageURL state to emplty
-    //         setPostURL("")
-    //         // Update state to cause threads to be re-rendered
-    //         setChange(true)
-
-    //     }
-    //     if (postMSG !== null) {
-    //         createNewThread();
-    //     }
-    // }, [])
 
 
     return (
