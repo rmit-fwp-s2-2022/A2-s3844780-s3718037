@@ -37,7 +37,6 @@ async function registerUser(name, email, password) {
 async function verifyUser(email, password) {
     const response = await axios.get(API_HOST + "/api/users/login", { params: { email, password } });
     const user = response.data;
-    //console.log(user);
 
     if (user !== null)
         return user;
