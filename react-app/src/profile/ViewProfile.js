@@ -1,6 +1,6 @@
 import DisplayFollows from "../profile/DisplayFollows.js";
 import React, { useEffect, useState } from "react";
-import { followUser, isUserFollowed } from "../Util";
+import { followUser, isUserFollowed, dateFormatter } from "../Util";
 import { useLocation } from "react-router-dom";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -74,7 +74,7 @@ export default function Profile(props) {
 
                     </div>
                     <div className="card-footer profile-card border-top-0 pt-0">
-                        <small className="text-muted ">Joined: {user.joinDate}</small>
+                        <small className="text-muted ">Joined: {dateFormatter(user.createdAt)}</small>
                     </div>
                 </div>
             </div>

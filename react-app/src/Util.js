@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// --- Constants ----------------------------------------------------------------------------------
-const API_HOST = "http://localhost:4000";
+// --- Constants -------------------------------------------------------------------------
+const API_HOST = "http://localhost:4001";
 const USERS = "users"
 const USER_DATA = 'user_data';
 const THREADS = "threads"
@@ -13,7 +13,7 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
 const PASSWORD_REGEX = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/;
 const NAME_REGEX = /[^a-zA-Z ]+/;
 
-// --- User ---------------------------------------------------------------------------------------
+// --- User ------------------------------------------------------------------------------
 async function isEmailRegistered(email) {
     const response = await axios.get(API_HOST + "/api/users/select", { params: { email } });
     let user = response.data;
@@ -25,7 +25,7 @@ async function isEmailRegistered(email) {
     return false;
 }
 
-// Create user on the database
+// Create a new user in the database
 async function registerUser(name, email, password) {
     const response = await axios.post(API_HOST + "/api/users", { name, email, password });
     const user = response.data;
@@ -37,7 +37,6 @@ async function registerUser(name, email, password) {
 async function verifyUser(email, password) {
     const response = await axios.get(API_HOST + "/api/users/login", { params: { email, password } });
     const user = response.data;
-    console.log(user);
 
     if (user !== null)
         return user;
@@ -47,13 +46,13 @@ async function verifyUser(email, password) {
 
 // Remove users and delete their threads/comments
 async function deleteUser(user) {
-    const response = await axios.delete(API_HOST + "/api/profiles/delete", { data: { userID: user.userID }} );
-    const success = response.data;
-
-    console.log(success);
 
     // Delete all threads and comments from user
-    // deleteAllPostsById(user.userID)
+    await deleteAllPostsById(user.userID)
+
+    const response = await axios.delete(API_HOST + "/api/profiles/delete", { data: { userID: user.userID } });
+    const success = response.data;
+
 }
 
 async function updateUserProfile(userID, name, email, password) {
@@ -72,21 +71,16 @@ async function updateProfilePic(userID, profilePic) {
     localStorage.setItem(USER_DATA, JSON.stringify(user));
 }
 
-// --- Follow ---------------------------------------------------------------------------------------
+// --- Follow Functionality ---------------------------------------------------------------------------------------
 async function followUser(userID, userFollowedID, isFollowing) {
-    if (isFollowing)
-    {
+    if (isFollowing) {
         // Follow User
-        const response = await axios.post(API_HOST + "/api/follows", { userID, userFollowedID });
-        const data = response.data;
-
+        await axios.post(API_HOST + "/api/follows", { userID, userFollowedID });
         return true;
     }
-    else
-    {
+    else {
         // Unfollow User
-        const response = await axios.delete(API_HOST + "/api/follows", { data: { userID, userFollowedID } });
-        const data = response.data;
+        await axios.delete(API_HOST + "/api/follows", { data: { userID, userFollowedID } });
 
         return false;
     }
@@ -98,7 +92,7 @@ async function isUserFollowed(userID, userFollowedID) {
 
     if (user !== undefined && user !== null && user !== "")
         return true;
-    
+
     return false;
 }
 
@@ -119,8 +113,10 @@ async function getAllUsers()
 
 // --- Helper Functions ---------------------------------------------------------------------------------------
 // Return a pre-formatted date when a user registers their account
-function dateFormatter() {
-    const date = new Date();
+function dateFormatter(mySQL_Date) {
+
+    // Convert MySQL date to JS date
+    var date = new Date(Date.parse(mySQL_Date));
 
     // Obtain date in segments
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -143,179 +139,99 @@ function validPassword(password) {
     return PASSWORD_REGEX.test(password);
 }
 
-// Email validation
+// Local email validation
 function validEmail(email) {
     return EMAIL_REGEX.test(email);
 }
 
+// Return logged in user via local storage
 function getUserInfo() {
     return JSON.parse(localStorage.getItem(USER_DATA));
 }
 
-function getUsers() {
-    return JSON.parse(localStorage.getItem(USERS));
+// Return all users
+async function getUsers() {
+    const response = await axios.get(API_HOST + "/api/users/");
+    const users = response.data;
+    return users;
 }
 
+// Return a single user by ID
 async function getUserByID(userID) {
-    const response = await axios.get(API_HOST + "/api/users/select/" + userID);
-    const user = response.data;
-
-    return user;
+    const response = await axios.get(API_HOST + `/api/users/select/${userID}`);
+    return response.data;
 }
 
-function getThreads() {
-    return JSON.parse(localStorage.getItem(THREADS));
+
+// --- Threads & Comments ---------------------------------------------------------------------------------------
+// Return all threads
+async function getThreads() {
+    const response = await axios.get(API_HOST + "/api/threads");
+    return response.data;
 }
 
-// Return the thread from its ID.
-function getThreadsByID(tid) {
-    const threads = getThreads();
-    if (threads !== null) {
-        return threads.find(thread => thread.tid === tid)
-    }
+// Return a thread from its ID.
+async function getThreadsByID(threadID) {
+    const response = await axios.get(API_HOST + `/api/threads/select/${threadID}`);
+    return response.data;
 }
 
 // Return all comments.
-function getComments() {
-    return JSON.parse(localStorage.getItem(COMMENTS));
+async function getComments() {
+    const response = await axios.get(API_HOST + "/api/comments");
+    return response.data;
 }
 
 // Return a whole array of comments related to the same thread.
-function getCommentsByID(tid) {
-    const comments = getComments();
-    if (comments !== null) {
-        return comments.filter(thread => thread.tid === tid);
-    }
+async function getCommentsByID(threadID) {
+    const response = await axios.get(API_HOST + "/api/comments/all", { params: { threadID } });
+    return response.data;
 }
-
-// Return a whole array of threads related to the same user.
-function getAllThreadsByID(userID) {
-    const threads = getThreads();
-    if (threads !== null) {
-        return threads.filter(thread => thread.tid === userID);
-    }
-}
-
-// --- Thread & Comments ---------------------------------------------------------------------------------------
 
 // Save new thread details to localstorage, return individual thread.
-function newThread(post, postPic) {
+async function newThread(post, postPic) {
 
-    // Obtain all threads
-    let threads = getThreads()
-
-    // Assign a thread ID
-    let tid = null
-    if (threads !== null) {
-        // Obtain a new unique thread ID (tid)
-        tid = Math.max(...threads.map(thread => thread.tid)) + 1
-    } else {
-        tid = 1
-    }
-
-    // Obtain user details
+    // Obtain current user ID
     const currentUser = getUserInfo()
-    const postDate = dateFormatter()
+    const currentUserID = currentUser.userID
+    await axios.post(API_HOST + "/api/threads", { post, postPic, currentUserID });
 
-    // Create individual thread
-    const thread = { userID: currentUser.userID, tid: tid, post: post, postDate: postDate, postPic: postPic };
-
-    if (threads === null)
-        threads = [];
-
-    // Add individual thread to theads array
-    threads.push(thread);
-    // Save threads to localstorage
-    localStorage.setItem(THREADS, JSON.stringify(threads));
-
-    return thread
+    return true
 }
 
 // Add new comment to existing thread
-function newComment(tid, commentText) {
-
-    // Obtain all threads
-    let comments = getComments()
-
-    // Assign a thread ID
-    let cid = null
-    if (comments !== null) {
-        // Obtain a new unique comment ID (cid)
-        cid = Math.max(...comments.map(comment => comment.cid)) + 1
-    } else {
-        cid = 1
-    }
+async function newComment(threadID, commentText) {
 
     // Obtain user details
     const currentUser = getUserInfo()
-    const postDate = dateFormatter()
+    const currentUserID = currentUser.userID
 
-    // Create individual comment
-    const comment = { userID: currentUser.userID, tid: tid, cid: cid, commentText: commentText, postDate: postDate };
-
-    if (comments === null)
-        comments = [];
-
-    // Add individual thread to theads array
-    comments.push(comment);
-    // Save threads to localstorage
-    localStorage.setItem(COMMENTS, JSON.stringify(comments));
-
+    const response = await axios.post(API_HOST + "/api/comments", { commentText, currentUserID, threadID });
+    const comment = response.data;
     return comment
 }
 
 // Edit/Update post.
-function updatePost(tid, post, postPic) {
-
-    // Get thread info
-    let threads = getThreads();
-
-    for (let i = 0; i < threads.length; i++) {
-        if (threads[i].tid === tid) {
-
-            // Update details in list
-            threads[i].post = post;
-            threads[i].postPic = postPic;
-            break;
-        }
-    }
-    // Update threads
-    localStorage.setItem(THREADS, JSON.stringify(threads));
-    console.log("Updated!")
+async function updatePost(threadID, post, postPic) {
+    await axios.put(API_HOST + "/api/threads/update", { threadID, post, postPic });
 }
 
 // Delete a thread and all associated comments based on thread ID
-function deleteThread(tid) {
-    // Get threads
-    let threads = getThreads();
-    // Remove thread from list
-    threads = threads.filter((value) => value.tid !== tid);
-    // Update threads
-    localStorage.setItem(THREADS, JSON.stringify(threads));
+async function deleteThread(threadID) {
 
-    //Get comments
-    let comments = getComments();
-    // Remove comments from list
-    comments = comments.filter((value) => value.tid !== tid);
-    // Update threads
-    localStorage.setItem(COMMENTS, JSON.stringify(comments));
+    // Delete comments associated with the thread.
+    await axios.delete(API_HOST + `/api/comments/delete/${threadID}`);
+    // Delete the thread itself.
+    await axios.delete(API_HOST + `/api/threads/delete/${threadID}`);
 }
 
 // Delete a thread and all associated comments from a user's ID
-function deleteAllPostsById(userID) {
-    // Get threads
-    let threads = getThreads();
-    // Remove thread from list
-    threads = threads.filter((value) => value.userID !== userID);
-    // Update threads
-    localStorage.setItem(THREADS, JSON.stringify(threads));
+async function deleteAllPostsById(userID) {
 
-    //Get comments
-    let comments = getComments();
-    // Remove comments from list
-    comments = comments.filter((value) => value.userID !== userID);
-    // Update threads
-    localStorage.setItem(COMMENTS, JSON.stringify(comments));
+    // Delete comments associated with the thread.
+    await axios.delete(API_HOST + `/api/comments/deleteFromUserID/${userID}`);
+    // Delete the thread itself.
+    await axios.delete(API_HOST + `/api/threads/deleteFromUserID/${userID}`);
 }
 
 
@@ -341,5 +257,6 @@ export {
     deleteThread,
     deleteAllPostsById,
     USER_DATA,
-    NAME_REGEX
+    NAME_REGEX,
+    dateFormatter
 }

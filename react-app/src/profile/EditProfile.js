@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { validPassword, validEmail, updateUserProfile, updateProfilePic, NAME_REGEX, isEmailRegistered } from "../Util";
 
+// eslint-disable-next-line no-useless-escape
 const IMAGE_URL_PATTERN = "^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)$";
 
 export default function EditProfile(props) {
@@ -39,14 +40,13 @@ export default function EditProfile(props) {
             value = value.replace(NAME_REGEX, "");
             document.querySelector("#edit-profile-name").value = value;
         }
-
-        setInputs({...inputs, [name]: value});
+        setInputs({ ...inputs, [name]: value });
     }
 
     const saveProfile = async (event) => {
         event.preventDefault(); // Prevent page from refreshing/reloading
         const emailLowerCase = inputs.email.toLowerCase();
-        
+
         let emailRegistered;
         if (emailLowerCase === props.user.email)
             emailRegistered = false;
@@ -62,15 +62,15 @@ export default function EditProfile(props) {
 
                         // Update user details
                         await updateUserProfile(props.user.userID, inputs.name, inputs.email, inputs.password);
-    
+
                         // Update user useState variable
                         props.updateUser();
-    
+
                         // Reset modal
                         resetInputs.name = inputs.name;
                         resetInputs.email = inputs.email;
                         reset();
-    
+
                         // Close the modal
                         document.getElementById("edit-profile-btn-close").click();
                     }
@@ -86,8 +86,6 @@ export default function EditProfile(props) {
         else
             setErrorMessage("Email address already used");
     }
-
-
 
     const profilePicChange = (event) => {
         const value = event.target.value;
@@ -108,7 +106,7 @@ export default function EditProfile(props) {
         setProfileURL(null);
     };
 
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    // Disable form submissions if there are invalid fields
     (() => {
         'use strict'
 

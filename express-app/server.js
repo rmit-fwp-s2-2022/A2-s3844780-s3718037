@@ -22,10 +22,11 @@ app.get("/", (req, res) => {
 require("./src/routes/user.routes.js")(express, app);
 require("./src/routes/profile.routes.js")(express, app);
 require("./src/routes/follow.routes.js")(express, app);
-require("./src/routes/post.routes.js")(express, app);
+require("./src/routes/thread.routes.js")(express, app);
+require("./src/routes/comment.routes.js")(express, app);
 
 // Set port, listen for requests.
-const PORT = 4000;
+const PORT = 4001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
