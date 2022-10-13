@@ -11,8 +11,11 @@ module.exports = (express, app) => {
   // Create a new thread.
   router.post("/", controller.create);
 
-  // Delete thread
+  // Delete thread based off threadID
   router.delete("/delete/:id", controller.deleteThread);
+
+  // Delete thread based off userID
+  router.delete("/deleteFromUserID/:id", controller.deleteThreadUserID);
 
   // Update thread
   router.put("/update", controller.update);

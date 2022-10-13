@@ -14,8 +14,11 @@ module.exports = (express, app) => {
   // Create a new comment.
   router.post("/", controller.create);
 
-  // Delete comments
+  // Delete comments based off threadID
   router.delete("/delete/:id", controller.deleteComments);
+
+  // Delete thread based off userID
+  router.delete("/deleteFromUserID/:id", controller.deleteCommentUserID);
 
   // Add routes to server.
   app.use("/api/comments", router);

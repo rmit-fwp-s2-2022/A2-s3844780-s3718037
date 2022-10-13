@@ -47,13 +47,13 @@ async function verifyUser(email, password) {
 
 // Remove users and delete their threads/comments
 async function deleteUser(user) {
+
+    // Delete all threads and comments from user
+    await deleteAllPostsById(user.userID)
+
     const response = await axios.delete(API_HOST + "/api/profiles/delete", { data: { userID: user.userID } });
     const success = response.data;
 
-    //console.log(success);
-
-    // Delete all threads and comments from user
-    // deleteAllPostsById(user.userID)
 }
 
 async function updateUserProfile(userID, name, email, password) {
@@ -345,20 +345,27 @@ async function deleteThread(threadID) {
 }
 
 // Delete a thread and all associated comments from a user's ID
-function deleteAllPostsById(userID) {
-    // Get threads
-    let threads = getThreads();
-    // Remove thread from list
-    threads = threads.filter((value) => value.userID !== userID);
-    // Update threads
-    localStorage.setItem(THREADS, JSON.stringify(threads));
+async function deleteAllPostsById(userID) {
 
-    //Get comments
-    let comments = getComments();
-    // Remove comments from list
-    comments = comments.filter((value) => value.userID !== userID);
-    // Update threads
-    localStorage.setItem(COMMENTS, JSON.stringify(comments));
+    // Delete comments associated with the thread.
+    await axios.delete(API_HOST + `/api/comments/deleteFromUserID/${userID}`);
+
+    // Delete the thread itself.
+    await axios.delete(API_HOST + `/api/threads/deleteFromUserID/${userID}`);
+
+    // // Get threads
+    // let threads = getThreads();
+    // // Remove thread from list
+    // threads = threads.filter((value) => value.userID !== userID);
+    // // Update threads
+    // localStorage.setItem(THREADS, JSON.stringify(threads));
+
+    // //Get comments
+    // let comments = getComments();
+    // // Remove comments from list
+    // comments = comments.filter((value) => value.userID !== userID);
+    // // Update threads
+    // localStorage.setItem(COMMENTS, JSON.stringify(comments));
 }
 
 

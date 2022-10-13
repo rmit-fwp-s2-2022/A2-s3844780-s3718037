@@ -32,6 +32,13 @@ exports.deleteThread = async (req, res) => {
   res.json("success");
 };
 
+// Delete a thread based off userID
+exports.deleteThreadUserID = async (req, res) => {
+  await db.thread.destroy({ where: { userID: req.params.id } });
+
+  res.json("success");
+};
+
 // Update thread
 exports.update = async (req, res) => {
   // req.body.threadID

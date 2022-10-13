@@ -40,3 +40,10 @@ exports.deleteComments = async (req, res) => {
 
   res.json("success");
 };
+
+// Delete all comments based off userID
+exports.deleteCommentUserID = async (req, res) => {
+  await db.comment.destroy({ where: { userID: req.params.id } });
+
+  res.json("success");
+};
