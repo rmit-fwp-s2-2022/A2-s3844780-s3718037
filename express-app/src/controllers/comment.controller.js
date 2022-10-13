@@ -33,3 +33,10 @@ exports.allByThreadID = async (req, res) => {
 
   res.json(allComments);
 };
+
+// Delete all comments based off theadID
+exports.deleteComments = async (req, res) => {
+  await db.comment.destroy({ where: { threadID: req.params.id } });
+
+  res.json("success");
+};

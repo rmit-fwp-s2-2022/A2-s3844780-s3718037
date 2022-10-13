@@ -53,6 +53,7 @@ export default function Thread(props) {
 
     // Get all comments by thread ID
     useEffect(() => {
+        console.log("test9")
         async function loadComments() {
             const allComments = await getCommentsByID(props.threadID);
 

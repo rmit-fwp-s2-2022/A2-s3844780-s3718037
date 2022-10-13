@@ -9,7 +9,7 @@ exports.all = async (req, res) => {
 	res.json(users);
 };
 
-// Select one from the database.
+// Select a single user from the database.
 exports.one = async (req, res) => {
 	let user = null;
 

@@ -1,10 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getThreadsByID, updatePost } from "../Util";
 
 export default function EditPost(props) {
 
+    // Allow edit post modal to re-render upon change.
+    const [change, setChange] = useState(false);
+
+    // Get and set current thread
+    const [thread, setThread] = useState("");
+
     // Obtain thread by ID
-    const thread = getThreadsByID(props.threadID)
+    //const thread = getThreadsByID(props.threadID)
+
+
+    // Obtain thread by ID
+    useEffect(() => {
+        async function loadThreadByID() {
+            // const allThreads = await getThreads();
+            const individualThread = await getThreadsByID(props.threadID)
+
+            setThread(individualThread);
+            // setIsLoading(false);
+        }
+        loadThreadByID();
+        // Reset change useState
+        setChange(false)
+    }, [change]);
+
+
 
     // Fill form elements with current thread data.
     const resetInputs = {
@@ -36,6 +59,8 @@ export default function EditPost(props) {
 
         // Pass inputs to parent component
         props.passPost(inputs)
+
+        setChange(true)
     }
 
     return (

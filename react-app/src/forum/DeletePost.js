@@ -13,7 +13,7 @@ export default function EditPost(props) {
         // Pass inputs to parent component
         props.passShowThread(false)
 
-        // Delete user and logout
+        // Delete thread
         deleteThread(props.threadID);
     }
 

@@ -25,5 +25,11 @@ exports.one = async (req, res) => {
   res.json(thread);
 };
 
+// Delete a thread based off theadID
+exports.deleteThread = async (req, res) => {
+  await db.thread.destroy({ where: { threadID: req.params.id } });
+
+  res.json("success");
+};
 
 

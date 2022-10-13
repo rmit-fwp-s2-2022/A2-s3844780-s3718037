@@ -311,20 +311,32 @@ function updatePost(tid, post, postPic) {
 }
 
 // Delete a thread and all associated comments based on thread ID
-function deleteThread(tid) {
+async function deleteThread(threadID) {
+
+
+    // getCommentsByID(threadID)
+
+    // Delete comments associated with the thread.
+    await axios.delete(API_HOST + `/api/comments/delete/${threadID}`);
+
+    // Delete the thread itself.
+    await axios.delete(API_HOST + `/api/threads/delete/${threadID}`);
+
+
     // Get threads
-    let threads = getThreads();
+    // let threads = getThreads();
+
     // Remove thread from list
-    threads = threads.filter((value) => value.tid !== tid);
-    // Update threads
-    localStorage.setItem(THREADS, JSON.stringify(threads));
+    // threads = threads.filter((value) => value.tid !== tid);
+    // // Update threads
+    // localStorage.setItem(THREADS, JSON.stringify(threads));
 
     //Get comments
-    let comments = getComments();
+    // let comments = getComments();
     // Remove comments from list
-    comments = comments.filter((value) => value.tid !== tid);
-    // Update threads
-    localStorage.setItem(COMMENTS, JSON.stringify(comments));
+    // comments = comments.filter((value) => value.tid !== tid);
+    // // Update threads
+    // localStorage.setItem(COMMENTS, JSON.stringify(comments));
 }
 
 // Delete a thread and all associated comments from a user's ID
