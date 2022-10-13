@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUserByID, newComment, getCommentsByID } from "../Util";
+import { getUserByID, newComment, getCommentsByID, dateFormatter } from "../Util";
 import { useNavigate } from "react-router-dom";
 import Comment from "./Comment";
 import EditIcon from '@material-ui/icons/Edit';
@@ -103,12 +103,6 @@ export default function Thread(props) {
         }
     }, [createComment])
 
-
-    //    }, [postMSG, postURL])
-
-
-
-
     // Update change state
     const handleClick = event => {
 
@@ -119,8 +113,6 @@ export default function Thread(props) {
             setIsLoading(true);
         }
     };
-
-
 
     // Get all comments by thread ID
     useEffect(() => {
@@ -146,19 +138,12 @@ export default function Thread(props) {
         setComment(event.target.value)
     }
 
-
-
-
     // Initiate creating a new comment
     const userComment = (event) => {
         // Prevent page from refreshing/reloading
         event.preventDefault();
 
     }
-
-
-
-
 
     // View Profile of User
     const viewProfile = (event) => {
@@ -178,14 +163,14 @@ export default function Thread(props) {
                     {/* Start of thread row */}
                     <div className="row">
                         <div className="col-sm-1">
-                            <img className="card-img rounded-circle profile-pic mx-4 my-3 border" src={user != null ? user.profilePic : ""} />
+                            <img className="card-img rounded-circle profile-pic mx-4 my-3 border" alt="" src={user != null ? user.profilePic : ""} />
                         </div>
                         <div className="col-sm-11 main-textarea">
                             <div className="card-body mx-5 mt-1 thread-body">
                                 <h5 className="card-title pt-1">{user != null ?
                                     <a href="" onClick={viewProfile} className="profile-link"
                                     >{user.name}</a> : ""}
-                                    <span className="text-muted thread-date"> · {props.postDate}  </span>
+                                    <span className="text-muted thread-date"> · {dateFormatter(props.postDate)}  </span>
                                     <EditIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#edit-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
                                     <DeleteIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#delete-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
                                 </h5>
@@ -209,7 +194,7 @@ export default function Thread(props) {
                                         userID={comment.userID}
                                         threadID={comment.threadID}
                                         commentText={comment.commentText}
-                                        postDate={comment.postDate}
+                                        postDate={comment.updatedAt}
                                     />
                                 )
                     }

@@ -105,8 +105,10 @@ async function getUserFollows(userID) {
 
 // --- Helper Functions ---------------------------------------------------------------------------------------
 // Return a pre-formatted date when a user registers their account
-function dateFormatter() {
-    const date = new Date();
+function dateFormatter(mySQL_Date) {
+
+    // Convert MySQL date to JS date
+    var date = new Date(Date.parse(mySQL_Date));
 
     // Obtain date in segments
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -247,5 +249,6 @@ export {
     deleteThread,
     deleteAllPostsById,
     USER_DATA,
-    NAME_REGEX
+    NAME_REGEX,
+    dateFormatter
 }

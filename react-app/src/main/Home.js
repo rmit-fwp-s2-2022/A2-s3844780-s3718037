@@ -35,17 +35,6 @@ export default function Home(props) {
         getFollows();
     }, [])
 
-    // if (postMSG !== null) {
-    //     // Create a new thread
-    //     newThread(postMSG, postURL)
-    //     // Reset post message state to null
-    //     setPostMSG(null)
-    //     // Reset post imageURL state to emplty
-    //     setPostURL("")
-    //     // Update state to cause threads to be re-rendered
-    //     setChange(true)
-    // }
-
     // Create a new thread and then cause a re-render
     useEffect(() => {
         const createNewThread = async () => {
@@ -62,27 +51,6 @@ export default function Home(props) {
             createNewThread();
         }
     }, [postMSG, postURL])
-
-
-
-    // if (postMSG !== null) {
-    //     // Create a new thread, 
-    //     let updateThreads = true
-    //     newThread(postMSG, postURL)
-
-    //     // Reset post message state to null
-    //     setPostMSG(null)
-    //     // Reset post imageURL state to emplty
-    //     setPostURL("")
-
-    //     // Only re-render the page after the new thread query has completed.
-    //     if (updateThreads === true) {
-    //         // Update state to cause threads to be re-rendered
-    //         setChange(true)
-    //         updateThreads = false
-    //     }
-    // }
-
 
     // Obtain all threads.
     useEffect(() => {
@@ -125,7 +93,7 @@ export default function Home(props) {
                                 userID={thread.userID}
                                 threadID={thread.threadID}
                                 post={thread.post}
-                                postDate={thread.postDate}
+                                postDate={thread.updatedAt}
                                 postPic={thread.postPic}
                             />
                         })
