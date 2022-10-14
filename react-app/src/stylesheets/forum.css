@@ -86,3 +86,19 @@ hr {
 	color: inherit;
 	text-decoration: underline;
 }
+
+/* React-Quill CSS */
+.ql-editor {
+	padding: 0px;
+	padding-top: 3px;
+}
+
+.ql-editor.ql-blank::before{
+	padding: 0px !important;
+	margin: 0px;
+	margin-left: -15px;
+}
+
+.ql-bubble .ql-tooltip {
+	z-index: 1;
+  }

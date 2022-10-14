@@ -103,8 +103,7 @@ async function getUserFollows(userID) {
     return followRecords;
 }
 
-async function getAllUsers()
-{
+async function getAllUsers() {
     const response = await axios.get(API_HOST + "/api/users");
     const users = response.data;
 
@@ -188,7 +187,7 @@ async function getCommentsByID(threadID) {
     return response.data;
 }
 
-// Save new thread details to localstorage, return individual thread.
+// Save new thread details to database, return individual thread.
 async function newThread(post, postPic) {
 
     // Obtain current user ID
