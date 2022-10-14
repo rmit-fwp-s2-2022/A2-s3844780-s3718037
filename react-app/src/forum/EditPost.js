@@ -29,6 +29,18 @@ export default function EditPost(props) {
         // Prevent page from refreshing/reloading
         event.preventDefault();
 
+        // Trim the post text. Remove all HTML elements using a regex.
+        const postTrimmed = postMSG.replace(/<(.|\n)*?>/g, "").trim()
+
+        // Set error if post is empty.
+        if (postMSG.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
+            return;
+        }
+        // Set error if post exceeds 600 characters.
+        if (postTrimmed.length > 600) {
+            return
+        }
+
         // Copy fields to be query updated
         const copyInputs = { ...thread }
         copyInputs["post"] = postMSG
