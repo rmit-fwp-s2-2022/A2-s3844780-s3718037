@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import { getUserByID, newComment, getCommentsByID, dateFormatter, getUserInfo } from "../Util";
 
 import Comment from "./Comment";
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import EditPost from "./EditPost";
 import DeletePost from "./DeletePost";
 
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
 
 export default function Thread(props) {
 
@@ -164,7 +166,7 @@ export default function Thread(props) {
                         <div className="col-sm-1">
                             <img className="card-img rounded-circle profile-pic mx-4 my-3 border" alt="" src={user != null ? user.profilePic : ""} />
                         </div>
-                        <div className="col-sm-11 main-textarea">
+                        <div className="col-sm-9 main-textarea">
                             <div className="card-body mx-5 mt-1 pb-0 thread-body">
                                 <h5 className="card-title pt-1">{user != null ?
                                     <a href="" onClick={viewProfile} className="profile-link"
@@ -186,7 +188,15 @@ export default function Thread(props) {
                                 }
                             </div>
                         </div>
+                        <div className="col-sm-2">
+                            <>
+                                <a href="#" className="btn mt-3 reaction-icons" ><ArrowUpward style={{ fontSize: 30 }} /></a>
+                                <a href="#" className="btn mt-3 reaction-icons" ><ArrowDownward style={{ fontSize: 30 }} /></a>
+
+                            </>
+                        </div>
                     </div>
+
                     <hr />
                     {/* Comments */}
                     {

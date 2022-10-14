@@ -18,3 +18,4 @@ Tools/services used:
 - Express
 - Node.js
 - Email.js (For our 2FA implementation)
+- Material-ui Icons

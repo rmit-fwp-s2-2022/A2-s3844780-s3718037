@@ -87,6 +87,7 @@ hr {
 	text-decoration: underline;
 }
 
+
 /* React-Quill CSS */
 .ql-editor {
 	padding: 0px;
@@ -101,4 +102,22 @@ hr {
 
 .ql-bubble .ql-tooltip {
 	z-index: 1;
-  }
+}
+
+
+/* Post Reactions */
+.reaction-icons {
+padding-left: 6px;
+padding-right: 6px;
+}
+
+
+
+/* .down-icon {
+
+} */
+
+/* .camera-icon {
+	padding-left: 0px;
+	margin-top: 20px;
+} */
