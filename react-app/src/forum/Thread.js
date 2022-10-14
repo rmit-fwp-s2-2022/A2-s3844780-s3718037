@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUserByID, newComment, getCommentsByID, dateFormatter } from "../Util";
+import { getUserByID, newComment, getCommentsByID, dateFormatter, getUserInfo } from "../Util";
 
 import Comment from "./Comment";
 import EditIcon from '@material-ui/icons/Edit';
@@ -147,10 +147,13 @@ export default function Thread(props) {
         navigate("/profile", { state: { user: user } });
     }
 
+    const currentUser = getUserInfo()
 
     return (
         <>
             {/* Edit thread */}
+            {console.log(user)}
+
             <EditPost threadID={props.threadID} post={props.post} postPic={props.postPic} passPost={setInputs} />
             {/* Delete thread */}
             <DeletePost threadID={props.threadID} passShowThread={setShowThread} />
@@ -167,8 +170,14 @@ export default function Thread(props) {
                                     <a href="" onClick={viewProfile} className="profile-link"
                                     >{user.name}</a> : ""}
                                     <span className="text-muted thread-date"> · {dateFormatter(props.postDate)}  </span>
-                                    <EditIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#edit-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
-                                    <DeleteIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#delete-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
+                                    {/* Only allow the origional user of a post to edit or delete it */}
+                                    {currentUser.userID == props.userID ?
+                                        <>
+                                            <EditIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#edit-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
+                                            <DeleteIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#delete-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
+                                        </>
+                                        : <div></div>
+                                    }
                                 </h5>
                                 <div className="card-subtitle pt-1" dangerouslySetInnerHTML={{ __html: inputs.post }} />
                                 {
