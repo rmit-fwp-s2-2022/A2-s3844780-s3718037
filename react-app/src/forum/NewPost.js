@@ -3,22 +3,24 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import CloseIcon from '@material-ui/icons/Close';
 import { getUserInfo } from "../Util";
 
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
+
 export default function NewPost(props) {
 
     const [post, setPost] = useState("")
     const [errorMessage, setErrorMessage] = useState(null)
 
-    // Update the current post from textarea's input.
-    const handleInputChange = (event) => {
-        setPost(event.target.value)
-    }
-
     // Form submit logic.
     const handleSubmit = (e) => {
+        // Trim the post text. Remove all HTML elements using a regex.
+        const postTrimmed = post.replace(/<(.|\n)*?>/g, "").trim()
 
-        // Trim the post text.
-        const postTrimmed = post.trim()
-
+        // Set error if post is empty.
+        if (post.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
+            setErrorMessage("You cannot submit a post without a message.");
+            return;
+        }
         // Set error if post exceeds 600 characters.
         if (postTrimmed.length > 600) {
             const overLimit = postTrimmed.length - 600
@@ -26,32 +28,26 @@ export default function NewPost(props) {
             setErrorMessage("You cannot submit a post that exceeds 600 characters. You are " + overLimit + " " + characterPostfix + " over.")
             return
         }
-
-        // Set error if post is empty.
-        if (postTrimmed === "") {
-            setErrorMessage("You cannot submit a post without a message.")
-            return
-        }
-
         // Pass post message to parent component
-        props.passPostMSG(postTrimmed);
-
+        props.passPostMSG(post);
         // Reset post content and error message.
         setPost("")
         setErrorMessage(null)
     }
 
     // Make the 'Enter' keypress submit the form.
-    const handleUserKeyPress = e => {
-        if (e.key === "Enter" && !e.shiftKey) {
+    function onkeydown(e) {
+        if (e.keyCode === 13 && !e.shiftKey) {
             // Stop the 'Enter' key from creating a line-break in the textarea.
             e.preventDefault()
+            // Handle form inputs 
             handleSubmit()
         }
     };
 
     // Obtain user to display profile picture
     const user = getUserInfo()
+
 
     return (
         <div className="container mt-3 mb-3">
@@ -84,8 +80,7 @@ export default function NewPost(props) {
                         {/* Message textarea */}
                         <div className="col-sm-10 main-textarea">
                             <div className="card-body mx-4 mt-1 main-textarea">
-                                <textarea name="post" id="post" value={post} className="form-control" placeholder="Post a message..." rows="2" onChange={handleInputChange} onKeyPress={handleUserKeyPress}></textarea>
-
+                                <ReactQuill className="form-control" name="post" value={post} onChange={setPost} onKeyDown={onkeydown} style={{ height: "68px" }} theme="bubble" placeholder="Post a message..." />
                             </div>
                         </div>
                         {/* Upload image section */}

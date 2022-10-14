@@ -1,46 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { getThreadsByID, updatePost } from "../Util";
+import { updatePost } from "../Util";
+
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
 
 export default function EditPost(props) {
 
-    // Allow edit post modal to re-render upon change.
-    const [change, setChange] = useState(false);
     // Get and set current thread
     const [thread, setThread] = useState("");
+    // Obtain post image
+    const [postURL, setPostURL] = useState("");
+    // Obtain post message
+    const [postMSG, setPostMSG] = useState(null);
 
-    // Obtain thread by ID
+    // Initialise default values of post and URL fields
     useEffect(() => {
-        async function loadThreadByID() {
-            const individualThread = await getThreadsByID(props.threadID)
+        setPostMSG(props.post)
+        setPostURL(props.postPic)
+    }, []);
 
-            setThread(individualThread);
-        }
-        loadThreadByID();
-        // Reset change useState
-        setChange(false)
-    }, [change]);
-
-    // Obtain and set current state of inputs
+    // Obtain and set postURL
     const inputChange = (event) => {
-        const name = event.target.name
-        const value = event.target.value
-        const copyInputs = { ...thread }
-        copyInputs[name] = value
-        setThread(copyInputs)
+        setPostURL(event.target.value)
     }
 
+    // Initiate update thread in database
     const editThread = (event) => {
         // Prevent page from refreshing/reloading
         event.preventDefault();
+
+        // Copy fields to be query updated
+        const copyInputs = { ...thread }
+        copyInputs["post"] = postMSG
+        copyInputs["postPic"] = postURL
+
+        setThread(copyInputs)
         // Update the post
-        updatePost(props.threadID, thread.post, thread.postPic)
+        updatePost(props.threadID, copyInputs.post, copyInputs.postPic)
         // Close the modal
         const closeBTN = "edit-post-btn-close" + props.threadID
         document.getElementById(closeBTN).click();
         // Pass inputs to parent component
-        props.passPost(thread)
-        // Update change state
-        setChange(true)
+        props.passPost(copyInputs)
     }
 
 
@@ -56,11 +57,15 @@ export default function EditPost(props) {
                         <form onSubmit={editThread}>
                             <div className="mb-3">
                                 <label htmlFor="post" className="form-label" >Edit Text</label>
-                                <textarea name="post" id="post" defaultValue={thread.post} className="form-control" placeholder="Post a message..." rows="2" onChange={inputChange} required></textarea>
+                                {thread === null || thread === undefined ? <div></div> :
+                                    < ReactQuill className="form-control" name="post" value={postMSG} onChange={value => setPostMSG(value)} style={{ height: "68px" }} theme="bubble" placeholder="Post a message..." />
+                                }
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="postPic" className="form-label" >Edit Image URL</label>
-                                <input name="postPic" type="url" className="form-control" id="edit-post-link" onChange={inputChange} defaultValue={thread.postPic} placeholder="Please enter the URL of an image..." />
+                                {thread === null || thread === undefined ? <div></div> :
+                                    <input name="postPic" type="url" className="form-control" id="edit-post-link" onChange={inputChange} defaultValue={postURL} placeholder="Please enter the URL of an image..." />
+                                }
                             </div>
                             <div className="modal-footer px-0 py-0 border-0">
                                 <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
@@ -69,7 +74,7 @@ export default function EditPost(props) {
                         </form>
                     </div>
                 </div>
-            </div>
+            </div >
         </div >
     )
 }
