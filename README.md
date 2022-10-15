@@ -19,3 +19,5 @@ Tools/services used:
 - Node.js
 - Email.js (For our 2FA implementation)
 - Material-ui Icons
+- Argon2
+- Jest
