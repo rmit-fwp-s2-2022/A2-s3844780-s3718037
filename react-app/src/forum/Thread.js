@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUserByID, newComment, getCommentsByID, dateFormatter, getUserInfo } from "../Util";
+import { getUserByID, newComment, getCommentsByID, dateFormatter, getUserInfo, storeReaction, getReactionCount } from "../Util";
 
 import Comment from "./Comment";
 import EditPost from "./EditPost";
@@ -27,6 +27,10 @@ export default function Thread(props) {
     const [change, setChange] = useState(false);
     // Allow new comments to be created before re-render
     const [createComment, setCreateComment] = useState(false);
+    // User reactions state
+    const [reaction, setReaction] = useState(null);
+    // Reaction score
+    const [reactionScore, setReactionScore] = useState(null);
 
     const navigate = useNavigate();
 
@@ -126,6 +130,25 @@ export default function Thread(props) {
         setChange(false)
     }, [change]);
 
+    // Create/update reaction and set reaction scores.
+    useEffect(() => {
+        async function createReaction() {
+            // Create a new reaction and update scores
+            if (reaction !== null) {
+                // Store/update reaction in database
+                await storeReaction(reaction, currentUser.userID, props.threadID, "threadID")
+                const score = await getReactionCount(props.threadID, "threadID");
+                setReactionScore(score)
+            }
+            // Update scores upon render
+            if (reaction === null) {
+                const score = await getReactionCount(props.threadID, "threadID");
+                setReactionScore(score)
+            }
+        }
+        createReaction();
+    }, [reaction]);
+
     // Hide the component if the thread was deleted.
     if (showThread === false) {
         return null
@@ -140,7 +163,6 @@ export default function Thread(props) {
     const userComment = (event) => {
         // Prevent page from refreshing/reloading
         event.preventDefault();
-
     }
 
     // View Profile of User
@@ -149,9 +171,20 @@ export default function Thread(props) {
         navigate("/profile", { state: { user: user } });
     }
 
-    // Get logged in user details
+    // Get logged-in user. Stop user from being able to modify other users posts.
     const currentUser = getUserInfo()
 
+    // Handle upvoting a post event
+    const upvotePost = (event) => {
+        event.preventDefault();
+        setReaction(1)
+    }
+
+    // Handle upvoting a post event
+    const downvotePost = (event) => {
+        event.preventDefault();
+        setReaction(0)
+    }
 
     return (
         <>
@@ -171,7 +204,8 @@ export default function Thread(props) {
                                 <h5 className="card-title pt-1">{user != null ?
                                     <a href="" onClick={viewProfile} className="profile-link"
                                     >{user.name}</a> : ""}
-                                    <span className="text-muted thread-date"> · {dateFormatter(props.postDate)}  </span>
+                                    <span className="text-muted thread-bar"> · {dateFormatter(props.postDate)}  </span>
+                                    <span className="text-muted thread-bar"> · {reactionScore === null ? 0 + " Score" : reactionScore + " Score"}  </span>
                                     {/* Only allow the origional user of a post to edit or delete it */}
                                     {currentUser.userID == props.userID ?
                                         <>
@@ -190,8 +224,8 @@ export default function Thread(props) {
                         </div>
                         <div className="col-sm-2">
                             <>
-                                <a href="#" className="btn mt-3 reaction-icons" ><ArrowUpward style={{ fontSize: 30 }} /></a>
-                                <a href="#" className="btn mt-3 reaction-icons" ><ArrowDownward style={{ fontSize: 30 }} /></a>
+                                <a href="#" className="btn mt-3 reaction-icons" onClick={upvotePost}><ArrowUpward className="up-icon" style={{ fontSize: 30, color: '#6C757D' }} /></a>
+                                <a href="#" className="btn mt-3 reaction-icons" onClick={downvotePost}><ArrowDownward className="down-icon" style={{ fontSize: 30, color: '#6C757D' }} /></a>
 
                             </>
                         </div>

@@ -11,7 +11,7 @@
 	padding-left: 0px;
 }
 
-.thread-date {
+.thread-bar {
 	font-weight: 400;
 	font-size: 15px;
 }
@@ -110,14 +110,3 @@ hr {
 padding-left: 6px;
 padding-right: 6px;
 }
-
-
-
-/* .down-icon {
-
-} */
-
-/* .camera-icon {
-	padding-left: 0px;
-	margin-top: 20px;
-} */
