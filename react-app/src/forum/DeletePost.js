@@ -22,8 +22,8 @@ export default function EditPost(props) {
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title" id="delete-profile-modal-label">Delete Profile</h5>
-                        <button type="button" id={"delete-profile-btn-close" + props.threadID} className="btn-close" data-bs-dismiss="modal"></button>
+                        <h5 className="modal-title" id="delete-post-modal-label">Delete Post</h5>
+                        <button type="button" id={"delete-post-btn-close" + props.threadID} className="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div className="modal-body">
                         <p>Are you sure you want to delete this thread?</p>

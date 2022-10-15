@@ -98,17 +98,20 @@ export default function SignUp(props) {
                             <div className="mb-3">
                                 <label htmlFor="signup-name" className="form-label">Name</label>
                                 <input name="name" type="text" className="form-control" id="signup-name"
-                                    onChange={handleInputChange} placeholder="Enter your name" required />
+                                    onChange={handleInputChange} placeholder="Enter your name"
+                                    value={inputs.name} required />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="signup-email" className="form-label" >Email address</label>
                                 <input name="email" type="email" className="form-control" id="signup-email"
-                                    onChange={handleInputChange} placeholder="Enter your email address" required />
+                                    onChange={handleInputChange} placeholder="Enter your email address"
+                                    value={inputs.email} required />
                             </div>
                             <div>
                                 <label htmlFor="signup-password" className="form-label" >New Password</label>
                                 <input name="password" type="password" className="form-control" id="signup-password"
-                                    onChange={handleInputChange} placeholder="Enter your password" required />
+                                    onChange={handleInputChange} placeholder="Enter your password"
+                                    value={inputs.password} required />
                             </div>
                             <div className="form-text mb-3" id="password-help-block" >
                                 <p>
@@ -119,7 +122,8 @@ export default function SignUp(props) {
                             <div className="mb-3">
                                 <label htmlFor="signup-password-again" className="form-label" >Re-enter Password</label>
                                 <input name="samePassword" type="password" className="form-control" id="signup-password-again"
-                                    onChange={handleInputChange} placeholder="Re-enter your password" required />
+                                    onChange={handleInputChange} placeholder="Re-enter your password"
+                                    value={inputs.samePassword} required />
                             </div>
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
