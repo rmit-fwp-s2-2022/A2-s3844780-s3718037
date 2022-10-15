@@ -186,6 +186,7 @@ export default function Thread(props) {
         setReaction(0)
     }
 
+
     return (
         <>
             {/* Edit thread */}

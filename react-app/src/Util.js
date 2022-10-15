@@ -242,15 +242,12 @@ async function deleteAllPostsById(userID) {
 // --- Reactions ---------------------------------------------------------------------------------------
 // Get an individual reaction by either threadID or commentID
 async function getReactionByIDs(userID, ID, ID_Type) {
-
     if (ID_Type === "threadID") {
-        // const response = await axios.get(API_HOST + "/api/reactions/threads", { userID, ID });
         const response = await axios.get(API_HOST + "/api/reactions/threads", { params: { userID, ID } });
         return response.data;
-
     } else {
-        // const response = await axios.get(API_HOST + "/api/reactions/comments", { userID, ID });
-        // return response.data;
+        const response = await axios.get(API_HOST + "/api/reactions/comments", { params: { userID, ID } });
+        return response.data;
     }
 }
 
@@ -258,99 +255,85 @@ async function getReactionByIDs(userID, ID, ID_Type) {
 async function updateReaction(reactionID, reaction) {
     await axios.put(API_HOST + "/api/reactions/update", { reactionID, reaction });
 }
-
+// Save or update reactions in the database depending if reaction already exists
 async function storeReaction(reaction, userID, ID, ID_Type) {
-
+    // Save thread reactions
     if (ID_Type === "threadID") {
-
-        // // Check if reaction already exists
+        // Check if reaction already exists
         const response = await getReactionByIDs(userID, ID, "threadID")
-
         // If reaction doesnt already exist, create it
         if (response === "" || response === undefined || response === null) {
             await createReaction(reaction, userID, ID, ID_Type)
-
             // If the reaction found in the database is not the same as the users reaction, update it.
         } else if (response.reactionType !== reaction) {
             await updateReaction(response.reactionID, reaction)
         }
-
-
     } else {
-        // // Check if reaction already exists
-        // const cReaction = getReactionByIDs(userID, ID, "commentID")
-
-        // console.log("cReaction")
-        // console.log(cReaction)
+        // Check if reaction already exists
+        const response = await getReactionByIDs(userID, ID, "commentID")
+        // If reaction doesnt already exist, create it
+        if (response === "" || response === undefined || response === null) {
+            await createReaction(reaction, userID, ID, ID_Type)
+            // If the reaction found in the database is not the same as the users reaction, update it.
+        } else if (response.reactionType !== reaction) {
+            await updateReaction(response.reactionID, reaction)
+        }
     }
 }
-
+// Save reactions to the database depending if it is a thread or comment reaction
 async function createReaction(reaction, userID, ID, ID_Type) {
-
     if (ID_Type === "threadID") {
-
-        console.log("creating Reaction threadID ---")
         const response = await axios.post(API_HOST + "/api/reactions/TReaction", { reaction, userID, ID });
         return response.data
-
     } else {
-
-        // const response = await axios.post(API_HOST + "/api/reactions/CReaction", { reaction, userID, ID });
-
-        // console.log("created Reaction commentID")
+        const response = await axios.post(API_HOST + "/api/reactions/CReaction", { reaction, userID, ID });
+        return response.data
     }
 }
 
 // Return a sum of all upvotes minus downvoters for displaying
 async function getReactionCount(ID, ID_Type) {
-
     if (ID_Type === "threadID") {
         const response = await axios.get(API_HOST + "/api/reactions/allTReactions", { params: { ID } });
         const reactions = response.data;
-
-        // Create an array of all reactionTypes only from a specific post
-        const allReactions = reactions
-            .reduce((prev, current) => prev.concat(current), [])
-            .map((reaction) => reaction.reactionType)
-
-        // Count upVotes 
-        let upVotes = 0;
-        allReactions.forEach(element => {
-            if (element == "1") {
-                upVotes += 1;
-            }
-        });
-
-        // Count downVotes 
-        let downVotes = 0;
-        allReactions.forEach(element => {
-            if (element == "0") {
-                downVotes += 1;
-            }
-        });
-
-        // Final score 
-        const score = upVotes - downVotes
-
-        console.log("allReactions")
-        console.log(allReactions)
-
-        console.log("upVotes")
-        console.log(upVotes)
-
-        console.log("downVotes")
-        console.log(downVotes)
-
-        console.log("score")
-        console.log(score)
-
+        // Calculate the score
+        const score = calculateScore(reactions)
         return score
     } else {
-
-        // const response = await axios.get(API_HOST + "/api/reactions/allCReactions", { ID });
-        // console.log(response.data)
+        const response = await axios.get(API_HOST + "/api/reactions/allCReactions", { params: { ID } });
+        const reactions = response.data;
+        // Calculate the score
+        const score = calculateScore(reactions)
+        return score
     }
+}
 
+// Calculate reaction score
+function calculateScore(reactions) {
+    // Create an array of all reactionTypes only from a specific post
+    const allReactions = reactions
+        .reduce((prev, current) => prev.concat(current), [])
+        .map((reaction) => reaction.reactionType)
+
+    // Count upVotes 
+    let upVotes = 0;
+    allReactions.forEach(element => {
+        if (element == "1") {
+            upVotes += 1;
+        }
+    });
+
+    // Count downVotes 
+    let downVotes = 0;
+    allReactions.forEach(element => {
+        if (element == "0") {
+            downVotes += 1;
+        }
+    });
+
+    // Final score calculation
+    const score = upVotes - downVotes
+    return score
 }
 
 
