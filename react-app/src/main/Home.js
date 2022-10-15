@@ -69,7 +69,7 @@ export default function Home(props) {
     return (
         <>
             {/* Create new thread */}
-            <NewPost passPostMSG={setPostMSG} />
+            <NewPost passPostMSG={setPostMSG} profilePic={props.user.profilePic} />
             {/* Filter */}
             <Filter filter={filter} setFilter={setFilter} />
             {/* Display threads */}

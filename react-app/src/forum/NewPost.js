@@ -50,8 +50,9 @@ export default function NewPost(props) {
         }
     };
 
-    // Obtain user to display profile picture
-    const user = getUserInfo()
+    // // Obtain user to display profile picture
+    // const user = getUserInfo()
+
 
     return (
         <div className="container mt-3 mb-3">
@@ -79,7 +80,7 @@ export default function NewPost(props) {
                     {/* Profile picture */}
                     <div className="row">
                         <div className="col-sm-1">
-                            <img className="card-img rounded-circle profile-pic mx-4 my-3 border" src={user.profilePic} alt="Profile" />
+                            <img className="card-img rounded-circle profile-pic mx-4 my-3 border" src={props.profilePic} alt="Profile" />
                         </div>
                         {/* Message textarea */}
                         <div className="col-sm-10 main-textarea">
