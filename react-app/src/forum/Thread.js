@@ -219,7 +219,7 @@ export default function Thread(props) {
                                 <div className="card-subtitle pt-1" dangerouslySetInnerHTML={{ __html: inputs.post }} />
                                 {
                                     inputs.postPic === null || inputs.postPic === undefined || inputs.postPic === "" ? "" :
-                                        <img className="border rounded post-image" src={inputs.postPic} />
+                                        <img className="border rounded post-image mb-1" src={inputs.postPic} />
                                 }
                             </div>
                         </div>
