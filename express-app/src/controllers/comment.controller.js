@@ -1,7 +1,5 @@
 const db = require("../database");
 
-
-
 // Create a comment in the database.
 exports.create = async (req, res) => {
   const comment = await db.comment.create({
