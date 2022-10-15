@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 // --- Constants -------------------------------------------------------------------------
 const API_HOST = "http://localhost:4001";
 const USERS = "users"
@@ -7,11 +8,13 @@ const USER_DATA = 'user_data';
 const THREADS = "threads"
 const COMMENTS = "comments"
 
+
 // --- Regex -----------------------------------------------------------------------------
 // eslint-disable-next-line no-useless-escape
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PASSWORD_REGEX = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/;
 const NAME_REGEX = /[^a-zA-Z ]+/;
+
 
 // --- User ------------------------------------------------------------------------------
 async function isEmailRegistered(email) {
@@ -71,6 +74,7 @@ async function updateProfilePic(userID, profilePic) {
     localStorage.setItem(USER_DATA, JSON.stringify(user));
 }
 
+
 // --- Follow Functionality ---------------------------------------------------------------------------------------
 async function followUser(userID, userFollowedID, isFollowing) {
     if (isFollowing) {
@@ -103,13 +107,13 @@ async function getUserFollows(userID) {
     return followRecords;
 }
 
-async function getAllUsers()
-{
+async function getAllUsers() {
     const response = await axios.get(API_HOST + "/api/users");
     const users = response.data;
 
     return users;
 }
+
 
 // --- Helper Functions ---------------------------------------------------------------------------------------
 // Return a pre-formatted date when a user registers their account
@@ -188,7 +192,7 @@ async function getCommentsByID(threadID) {
     return response.data;
 }
 
-// Save new thread details to localstorage, return individual thread.
+// Save new thread details to database, return individual thread.
 async function newThread(post, postPic) {
 
     // Obtain current user ID
@@ -235,28 +239,115 @@ async function deleteAllPostsById(userID) {
 }
 
 
+// --- Reactions ---------------------------------------------------------------------------------------
+// Get an individual reaction by either threadID or commentID
+async function getReactionByIDs(userID, ID, ID_Type) {
+    if (ID_Type === "threadID") {
+        const response = await axios.get(API_HOST + "/api/reactions/threads", { params: { userID, ID } });
+        return response.data;
+    } else {
+        const response = await axios.get(API_HOST + "/api/reactions/comments", { params: { userID, ID } });
+        return response.data;
+    }
+}
+
+// Update an existing reaction
+async function updateReaction(reactionID, reaction) {
+    await axios.put(API_HOST + "/api/reactions/update", { reactionID, reaction });
+}
+// Save or update reactions in the database depending if reaction already exists
+async function storeReaction(reaction, userID, ID, ID_Type) {
+    // Save thread reactions
+    if (ID_Type === "threadID") {
+        // Check if reaction already exists
+        const response = await getReactionByIDs(userID, ID, "threadID")
+        // If reaction doesnt already exist, create it
+        if (response === "" || response === undefined || response === null) {
+            await createReaction(reaction, userID, ID, ID_Type)
+            // If the reaction found in the database is not the same as the users reaction, update it.
+        } else if (response.reactionType !== reaction) {
+            await updateReaction(response.reactionID, reaction)
+        }
+    } else {
+        // Check if reaction already exists
+        const response = await getReactionByIDs(userID, ID, "commentID")
+        // If reaction doesnt already exist, create it
+        if (response === "" || response === undefined || response === null) {
+            await createReaction(reaction, userID, ID, ID_Type)
+            // If the reaction found in the database is not the same as the users reaction, update it.
+        } else if (response.reactionType !== reaction) {
+            await updateReaction(response.reactionID, reaction)
+        }
+    }
+}
+// Save reactions to the database depending if it is a thread or comment reaction
+async function createReaction(reaction, userID, ID, ID_Type) {
+    if (ID_Type === "threadID") {
+        const response = await axios.post(API_HOST + "/api/reactions/TReaction", { reaction, userID, ID });
+        return response.data
+    } else {
+        const response = await axios.post(API_HOST + "/api/reactions/CReaction", { reaction, userID, ID });
+        return response.data
+    }
+}
+
+// Return a sum of all upvotes minus downvoters for displaying
+async function getReactionCount(ID, ID_Type) {
+    if (ID_Type === "threadID") {
+        const response = await axios.get(API_HOST + "/api/reactions/allTReactions", { params: { ID } });
+        const reactions = response.data;
+        // Calculate the score
+        const score = calculateScore(reactions)
+        return score
+    } else {
+        const response = await axios.get(API_HOST + "/api/reactions/allCReactions", { params: { ID } });
+        const reactions = response.data;
+        // Calculate the score
+        const score = calculateScore(reactions)
+        return score
+    }
+}
+
+// Calculate reaction score
+function calculateScore(reactions) {
+    // Create an array of all reactionTypes only from a specific post
+    const allReactions = reactions
+        .reduce((prev, current) => prev.concat(current), [])
+        .map((reaction) => reaction.reactionType)
+
+    // Count upVotes 
+    let upVotes = 0;
+    allReactions.forEach(element => {
+        if (element == "1") {
+            upVotes += 1;
+        }
+    });
+
+    // Count downVotes 
+    let downVotes = 0;
+    allReactions.forEach(element => {
+        if (element == "0") {
+            downVotes += 1;
+        }
+    });
+
+    // Final score calculation
+    const score = upVotes - downVotes
+    return score
+}
+
+
+
 export {
-    isEmailRegistered,
-    registerUser,
-    deleteUser,
-    updateUserProfile,
-    updateProfilePic,
-    followUser, isUserFollowed, getUserFollows, getAllUsers,
-    validPassword,
-    validEmail,
-    verifyUser,
-    getUserInfo,
-    getUsers,
-    newThread,
-    getThreads,
-    getUserByID,
-    newComment,
-    getCommentsByID,
-    getThreadsByID,
-    updatePost,
-    deleteThread,
-    deleteAllPostsById,
+    isEmailRegistered, registerUser,
+    updateUserProfile, updateProfilePic,
+    followUser, isUserFollowed, getUserFollows,
+    validPassword, validEmail, verifyUser,
+    getUserInfo, getUsers, deleteUser, getAllUsers, getUserByID,
+    newThread, getThreads, updatePost, deleteThread, deleteAllPostsById,
+    newComment, getCommentsByID, getThreadsByID,
+    storeReaction, getReactionCount,
+    dateFormatter,
     USER_DATA,
-    NAME_REGEX,
-    dateFormatter
+    NAME_REGEX
 }
