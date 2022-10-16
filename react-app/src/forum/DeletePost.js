@@ -7,7 +7,7 @@ export default function EditPost(props) {
         event.preventDefault();
 
         // Close the modal
-        const closeBTN = "delete-profile-btn-close" + props.threadID
+        const closeBTN = "delete-post-btn-close" + props.threadID
         document.getElementById(closeBTN).click();
 
         // Pass inputs to parent component
