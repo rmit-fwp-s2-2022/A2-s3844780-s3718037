@@ -5,9 +5,69 @@ body {
 		sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+
+	background-color: #EBEBEB;
 }
 
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
 		monospace;
+}
+
+.logo-text {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-weight: 700;
+}
+
+.logo-img {
+	height: 20px;
+	margin-left: 20px;
+}
+
+.landing-page {
+	background-image: url("https://i.imgur.com/XkAn3Mi.jpg");
+	background-size: cover;
+	height: 100vh;
+
+}
+
+.landing-page-title {
+	height: 400px;
+	padding-top: 315px;
+}
+
+.lp-main-title {
+	font-family: Trebuchet MS;
+	font-size: 80px;
+	text-shadow: 3px 3px 5px #000000;
+	color: white;
+	font-weight: normal;
+}
+
+.lp-secondary-title {
+	font-family: Trebuchet MS;
+	font-size: 29px;
+	text-shadow: 3px 3px 5px #000000;
+	color: white;
+	font-weight: normal;
+}
+
+.bg-logo-img {
+	height: 80px;
+
+}
+
+.profile-card {
+	background-color: #F6F6F6;
+	width: 700px;
+}
+
+.profile-pic {
+	width: 62px;
+	height: 62px;
+	margin-top: 20px !important;
+}
+
+.profile-card-body {
+	padding-left: 0px;
 }
