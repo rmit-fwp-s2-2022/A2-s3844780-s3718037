@@ -20,7 +20,7 @@ module.exports = {
     "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "jest-preview/transforms/file",
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!axios)"
+    "/node_modules/(?!(axios|react-quill|bootstrap)/)"
   ],
   modulePaths: [],
   moduleNameMapper: {
