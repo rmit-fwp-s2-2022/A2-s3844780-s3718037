@@ -13,6 +13,7 @@ graphql.schema = buildSchema(`
   # an owner. That said an owner has many pets and this is exposed within the GraphQL schema by association.
   # Behind the scenes the database pet table has an additional field called email which is a FK to owner.
   
+  # User table
   type User {
     userID: Int,
     name: String,
@@ -22,7 +23,8 @@ graphql.schema = buildSchema(`
     createdAt: String,
     updatedAt: String
   }
-  
+
+  # Thread table
   type Thread {
     threadID: Int,
     post: String,
@@ -32,6 +34,7 @@ graphql.schema = buildSchema(`
     userID: Int
   }
 
+  # Comment table
   type Comment {
     commentID: Int,
     commentText: String,
@@ -41,6 +44,7 @@ graphql.schema = buildSchema(`
     threadID: Int
   }
 
+  # Reaction table
   type Reaction {
     reactionID: Int,
     reactionType: Int,
@@ -49,13 +53,14 @@ graphql.schema = buildSchema(`
     commentID: Int
   }
 
+  # FollowUser table
   type FollowUser {
     followID: Int,
     userID: Int,
     userFollowedID: Int
   }
 
-  # The input type can be used for incoming data.
+  # ThreadInput used for incoming data.
   input ThreadInput {
     threadID: Int,
     post: String,
@@ -65,7 +70,7 @@ graphql.schema = buildSchema(`
     userID: Int
   }
 
-  # The input type can be used for incoming data.
+  # UserInput used for incoming data.
   input UserInput {
     userID: Int,
     name: String,
@@ -76,6 +81,15 @@ graphql.schema = buildSchema(`
     updatedAt: String
   }
 
+  # CommentInput used for incoming data.
+  input CommentInput {
+    commentID: Int,
+    commentText: String,
+    createdAt: String,
+    updatedAt: String,
+    userID: Int,
+    threadID: Int
+  }
 
   # Queries (read-only operations).
   type Query {
@@ -86,6 +100,7 @@ graphql.schema = buildSchema(`
   type Mutation {
     update_user(input: UserInput): User
     update_thread(input: ThreadInput): Thread
+    update_comment(input: CommentInput): Comment
   }
 
 `);
@@ -145,6 +160,21 @@ graphql.root = {
 
     await thread.save();
     return thread;
+  },
+
+  // Update comment
+  update_comment: async (args) => {
+    const comment = await db.comment.findByPk(args.input.commentID);
+
+    // Update fields.
+    comment.commentID = args.input.commentID;
+    comment.commentText = args.input.commentText;
+    comment.createdAt = args.input.createdAt;
+    comment.updatedAt = args.input.updatedAt;
+    comment.threadID = args.input.threadID;
+
+    await comment.save();
+    return comment;
   }
 
 };

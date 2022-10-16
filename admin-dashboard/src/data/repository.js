@@ -1,10 +1,9 @@
 import { request, gql } from "graphql-request";
 
-// --- Constants ----------------------------------------------------------------------------------
+// --- Constants ----------------------------------------------------
 const GRAPH_QL_URL = "http://localhost:4001/graphql";
 
-// --- Owner ---------------------------------------------------------------------------------------
-
+// --- User ---------------------------------------------------------
 // Return all users
 async function getUsers() {
   // Simply query with no parameters.
@@ -54,10 +53,10 @@ async function updateUser(user) {
         userID: $userID,
         name: $name,
         email: $email,
-        passwordHash: passwordHash,
-        profilePic: profilePic,
-        createdAt: createdAt,
-        updatedAt: updatedAt
+        passwordHash: p$asswordHash,
+        profilePic: $profilePic,
+        createdAt: $createdAt,
+        updatedAt: $updatedAt
       }) {
         userID,
         name,
@@ -75,6 +74,7 @@ async function updateUser(user) {
   return data.update_user;
 }
 
+// --- Threads ---------------------------------------------------------
 // Return all threads
 async function getThreads() {
   // Simply query with no parameters.
@@ -124,9 +124,9 @@ async function updateThread(thread) {
         threadID: $threadID,
         post: $post,
         postPic: $postPic,
-        createdAt: createdAt,
-        updatedAt: updatedAt
-        userID: userID,
+        createdAt: $createdAt,
+        updatedAt: $updatedAt
+        userID: $userID
         
       }) {
         threadID,
@@ -144,8 +144,79 @@ async function updateThread(thread) {
   return data.update_thread;
 }
 
+// --- Comments ---------------------------------------------------------
+
+// Return all comments
+async function getComments() {
+  // Simply query with no parameters.
+  const query = gql`
+    {
+      all_comments {
+        commentID,
+        commentText,
+        createdAt,
+        updatedAt,
+        userID,
+        threadID
+      }
+    }
+  `;
+
+  const data = await request(GRAPH_QL_URL, query);
+  return data.all_threads;
+}
+
+// Return a single comment based off commentID
+async function getComment(commentID) {
+  // Query with parameters (variables).
+  const query = gql`
+    query ($commentID: Int) {
+      comment(commentID: $commentID) {
+        commentID,
+        commentText,
+        createdAt,
+        updatedAt,
+        userID,
+        threadID
+      }
+    }
+  `;
+
+  const variables = { commentID };
+  const data = await request(GRAPH_QL_URL, query, variables);
+  return data.comment;
+}
+
+async function updateComment(comment) {
+  const query = gql`
+    mutation ($commentID: Int, $commentText: String, $createdAt: String,
+      $updatedAt: String, $userID: Int, $threadID: Int) {
+        update_thread(input: {
+        commentID: $commentID,
+        commentText: $commentText,
+        createdAt: $createdAt,
+        updatedAt: $updatedAt,
+        userID: $userID,
+        threadID: $threadID
+      }) {
+        commentID,
+        commentText,
+        createdAt,
+        updatedAt,
+        userID,
+        threadID
+      }
+    }
+  `;
+
+  const variables = comment;
+  const data = await request(GRAPH_QL_URL, query, variables);
+  return data.update_comment;
+}
 
 export {
-  getUsers, getUser, updateUser, updateThread, getThreads, getThread
+  getUsers, getUser, updateUser,
+  getThreads, getThread, updateThread,
+  getComments, getComment, updateComment
 }
 
