@@ -53,6 +53,9 @@ async function deleteUser(userID) {
     // Delete all threads and comments from user
     await deleteAllPostsById(userID)
 
+    // Remove all follows from user
+    await removeAllFollows(userID)
+
     const response = await axios.delete(API_HOST + "/api/profiles/delete", { data: { userID: userID } });
 
     return response.status;
@@ -92,6 +95,15 @@ async function followUser(userID, userFollowedID, isFollowing) {
 
         return false;
     }
+}
+
+// Runs when user deletes profile
+async function removeAllFollows(userID) {
+    const followRecords = await getUserFollows(userID);
+    const userFollowIDs = followRecords.map((followRecord) => { return followRecord.userFollowedID })
+    userFollowIDs.forEach(async (userFollowedID) => {
+        await followUser(userID, userFollowedID, false);
+    })
 }
 
 async function isUserFollowed(userID, userFollowedID) {
