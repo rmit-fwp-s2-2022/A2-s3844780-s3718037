@@ -31,6 +31,7 @@ async function getUser(userID) {
     query ($userID: Int) {
       user(userID: $userID) {
         userID,
+        name,
         email,
         passwordHash,
         profilePic,

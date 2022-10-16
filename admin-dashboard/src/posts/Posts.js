@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import DisplayPosts from "./DisplayPosts"
+import PostCard from "./PostCard"
 import { getThreads, getComments } from "../data/repository";
 
 
@@ -28,40 +28,38 @@ export default function Posts() {
     }, [change]);
 
 
-    // const numbersOne = [1, 2, 3];
-    // const numbersTwo = [4, 5, 6];
-    // const numbersCombined = [...numbersOne, ...numbersTwo];
-
-    // document.write(numbersCombined);
-
-
     return (
         <div>
-            {
-                isLoading ? <div></div> :
-                    posts.map((post) =>
-                        // If post is a thread
-                        post.hasOwnProperty("threadID") ?
-                            < DisplayPosts
-                                key={post.updatedAt}
-                                userID={post.userID}
-                                threadID={post.threadID}
-                                post={post.post}
-                                postDate={post.updatedAt}
-                                postPic={post.postPic}
-                            />
-                            :
-                            // If post is a comment
-                            <DisplayPosts
-                                key={post.updatedAt}
-                                commentID={post.commentID}
-                                userID={post.userID}
-                                threadID={post.threadID}
-                                commentText={post.commentText}
-                                postDate={post.updatedAt}
-                            />
-                    )
-            }
+            <div className="container mt-4">
+                <div className="row row-cols-4">
+
+                    {
+                        isLoading ? <div></div> :
+                            posts.map((post) =>
+                                // If post is a thread
+                                post.hasOwnProperty("commentText") ?
+                                    // If post is a comment
+                                    <PostCard
+                                        key={post.updatedAt}
+                                        commentID={post.commentID}
+                                        userID={post.userID}
+                                        threadID={post.threadID}
+                                        commentText={post.commentText}
+                                        postDate={post.updatedAt}
+                                    />
+                                    :
+                                    < PostCard
+                                        key={post.updatedAt}
+                                        userID={post.userID}
+                                        threadID={post.threadID}
+                                        post={post.post}
+                                        postDate={post.updatedAt}
+                                        postPic={post.postPic}
+                                    />
+                            )
+                    }
+                </div>
+            </div>
         </div>
     )
 }

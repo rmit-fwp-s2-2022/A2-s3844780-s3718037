@@ -7,16 +7,7 @@ export default function DisplayPosts(props) {
                 {
 
                     // If post is a thread
-                    props.hasOwnProperty("threadID") ?
-                        < PostCard
-                            key={props.updatedAt}
-                            userID={props.userID}
-                            threadID={props.threadID}
-                            post={props.post}
-                            postDate={props.updatedAt}
-                            postPic={props.postPic}
-                        />
-                        :
+                    props.hasOwnProperty("commentText") ?
                         // If post is a comment
                         <PostCard
                             key={props.updatedAt}
@@ -25,6 +16,15 @@ export default function DisplayPosts(props) {
                             threadID={props.threadID}
                             commentText={props.commentText}
                             postDate={props.updatedAt}
+                        />
+                        :
+                        < PostCard
+                            key={props.updatedAt}
+                            userID={props.userID}
+                            threadID={props.threadID}
+                            post={props.post}
+                            postDate={props.updatedAt}
+                            postPic={props.postPic}
                         />
                 }
             </div>
