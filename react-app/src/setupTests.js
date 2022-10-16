@@ -6,3 +6,4 @@ import "@testing-library/jest-dom";
 
 import './stylesheets/styles.css';
 import './stylesheets/forum.css';
+import 'bootstrap/dist/css/bootstrap.css';

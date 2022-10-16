@@ -48,16 +48,17 @@ async function verifyUser(email, password) {
 }
 
 // Remove users and delete their threads/comments
-async function deleteUser(user) {
+async function deleteUser(userID) {
 
     // Delete all threads and comments from user
-    await deleteAllPostsById(user.userID)
+    await deleteAllPostsById(userID)
 
     // Remove all follows from user
     await removeAllFollows(userID)
 
     const response = await axios.delete(API_HOST + "/api/profiles/delete", { data: { userID: userID } });
 
+    return response.status;
 }
 
 async function updateUserProfile(userID, name, email, password) {
@@ -66,6 +67,8 @@ async function updateUserProfile(userID, name, email, password) {
 
     // Update user
     localStorage.setItem(USER_DATA, JSON.stringify(user));
+
+    return response.status;
 }
 
 async function updateProfilePic(userID, profilePic) {
@@ -74,6 +77,8 @@ async function updateProfilePic(userID, profilePic) {
 
     // Update user
     localStorage.setItem(USER_DATA, JSON.stringify(user));
+
+    return response.status;
 }
 
 
@@ -204,13 +209,9 @@ async function getCommentsByID(threadID) {
 }
 
 // Save new thread details to database, return individual thread.
-async function newThread(post, postPic) {
-
-    // Obtain current user ID
-    const currentUser = getUserInfo()
-    const currentUserID = currentUser.userID
+async function newThread(post, postPic, userID) {
+    const currentUserID = userID
     await axios.post(API_HOST + "/api/threads", { post, postPic, currentUserID });
-
     return true
 }
 
@@ -238,6 +239,7 @@ async function deleteThread(threadID) {
     await axios.delete(API_HOST + `/api/comments/delete/${threadID}`);
     // Delete the thread itself.
     await axios.delete(API_HOST + `/api/threads/delete/${threadID}`);
+    return true
 }
 
 // Delete a thread and all associated comments from a user's ID
@@ -360,5 +362,5 @@ export {
     storeReaction, getReactionCount,
     dateFormatter,
     USER_DATA,
-    NAME_REGEX
+    NAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX
 }

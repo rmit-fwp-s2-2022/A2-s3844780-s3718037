@@ -4,7 +4,7 @@ export default function DeleteProfile(props) {
 
     const deleteProfile = () => {
         // Delete user and logout
-        deleteUser(props.user);
+        deleteUser(props.user.userID);
         props.userLogout();
     }
 

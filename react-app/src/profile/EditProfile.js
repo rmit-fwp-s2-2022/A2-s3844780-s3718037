@@ -146,7 +146,7 @@ export default function EditProfile(props) {
                         <form onSubmit={submitURL} className="needs-validation" id="edit-profile-pic-form" noValidate>
                             <label htmlFor="edit-profile-url" className="form-label">Profile Picture</label>
                             <div className="input-group mb-3 has-validation">
-                                <input type="text" className="form-control" placeholder="Insert URL"
+                                <input type="text" className="form-control" placeholder="Insert URL" role="textbox" aria-label="url-input-field"
                                     onChange={profilePicChange} id="edit-profile-url" pattern={IMAGE_URL_PATTERN} required />
                                 <button className="btn btn-success"
                                     style={{ width: "20%" }}>Confirm</button>

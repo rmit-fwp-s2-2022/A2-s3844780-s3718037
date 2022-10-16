@@ -6,7 +6,6 @@ import App from './App';
 import './stylesheets/styles.css';
 import './stylesheets/forum.css';
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<BrowserRouter>

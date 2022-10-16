@@ -20,11 +20,12 @@ module.exports = {
     "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "jest-preview/transforms/file",
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!axios)"
+    "/node_modules/(?!(axios|react-quill|bootstrap)/)"
   ],
   modulePaths: [],
   moduleNameMapper: {
     "^react-native$": "react-native-web",
+    "^.+\\.(css|scss|sass|less)$": "<rootDir>/config/jest/cssTransform.js",
   },
   moduleFileExtensions: [
     "web.js",
