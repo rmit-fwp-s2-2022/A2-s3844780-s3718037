@@ -193,13 +193,9 @@ async function getCommentsByID(threadID) {
 }
 
 // Save new thread details to database, return individual thread.
-async function newThread(post, postPic) {
-
-    // Obtain current user ID
-    const currentUser = getUserInfo()
-    const currentUserID = currentUser.userID
+async function newThread(post, postPic, userID) {
+    const currentUserID = userID
     await axios.post(API_HOST + "/api/threads", { post, postPic, currentUserID });
-
     return true
 }
 
@@ -227,6 +223,7 @@ async function deleteThread(threadID) {
     await axios.delete(API_HOST + `/api/comments/delete/${threadID}`);
     // Delete the thread itself.
     await axios.delete(API_HOST + `/api/threads/delete/${threadID}`);
+    return true
 }
 
 // Delete a thread and all associated comments from a user's ID
