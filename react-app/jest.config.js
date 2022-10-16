@@ -25,6 +25,7 @@ module.exports = {
   modulePaths: [],
   moduleNameMapper: {
     "^react-native$": "react-native-web",
+    "^.+\\.(css|scss|sass|less)$": "<rootDir>/config/jest/cssTransform.js",
   },
   moduleFileExtensions: [
     "web.js",
