@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import CloseIcon from '@material-ui/icons/Close';
-import { getUserInfo } from "../Util";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
@@ -44,11 +43,6 @@ export default function NewPost(props) {
             handleSubmit()
         }
     };
-
-    // // Obtain user to display profile picture
-    // const user = getUserInfo()
-
-
 
     return (
         <div className="container mt-3 mb-3">

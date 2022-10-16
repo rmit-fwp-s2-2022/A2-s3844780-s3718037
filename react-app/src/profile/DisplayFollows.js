@@ -9,6 +9,7 @@ export default function DisplayFollows(props) {
     const [displayUsers, setDisplayUsers] = useState(null);
 
     useEffect(() => {
+        // Get a list of users the user is following
         const getFollows = async () => {
             const followRecords = await getUserFollows(props.user.userID);
             const userFollowings = await Promise.all(followRecords.map(async (followRecord) => {
@@ -16,6 +17,8 @@ export default function DisplayFollows(props) {
             })) 
             setDisplayUsers(userFollowings);
         }
+
+        // Get a list of users for the user to follow
         const getUsersToFollow = async () => {
             const followRecords = await getUserFollows(props.user.userID);
             const userFollowIDs = followRecords.map((followRecord) => { return followRecord.userFollowedID })
@@ -29,6 +32,7 @@ export default function DisplayFollows(props) {
             setDisplayUsers(usersToFollow);
         }
 
+        // Filter
         if (tabFollows)
             getFollows();
         else
@@ -47,6 +51,7 @@ export default function DisplayFollows(props) {
                         <div className="row align-items-center text-center">
                             <div className="col p-0">
                                 {
+                                    // Display list of users the user is following
                                     tabFollows === true
                                         ? <>
                                             <button className="btn w-100 fs-5 fw-bold" style={{ height: "80px" }}>Following</button>
@@ -56,9 +61,11 @@ export default function DisplayFollows(props) {
                                 }
                             </div>
                             {
+                                // Do not display this tab, if looking at another user's profile
                                 props.isDifferentUser === false &&
                                 <div className="col p-0">
                                     {
+                                        // Display list of users for the user to follow
                                         tabFollows === false
                                             ? <>
                                                 <button className="btn w-100 fs-5 fw-bold" style={{ height: "80px" }}>Who to follow</button>
@@ -74,6 +81,7 @@ export default function DisplayFollows(props) {
             </div>
             <div className="card mx-auto profile-card border-0">
                 {
+                    // To display all user with follow button
                     displayUsers !== null  &&
                     displayUsers.map((user) => {
                         return <DisplayUser

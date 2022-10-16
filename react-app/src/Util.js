@@ -152,7 +152,6 @@ function dateFormatter(mySQL_Date) {
 // Password validation
 function validPassword(password) {
     // At least 8 characters long (?=.{8,}).
-    // At least one uppercase letter (?=.*[A-Z]).
     // At least one lowercase letter (?=.*[a-z]).
     // At least one digit (?=.*[0-9]).
     // At least one special character ([^A-Za-z0-9]).
@@ -165,8 +164,20 @@ function validEmail(email) {
 }
 
 // Return logged in user via local storage
-function getUserInfo() {
+function getUserInfo() {   
     return JSON.parse(localStorage.getItem(USER_DATA));
+}
+
+// Return logged in user via local storage
+async function blockUser() {   
+    const userInfo = getUserInfo();
+    const response = await axios.get(API_HOST + "/api/users/select/" + userInfo.userID);
+    const user = response.data;
+
+    if (user.blocked)
+        return true;
+    else
+        return false;
 }
 
 // Return all users
@@ -352,7 +363,7 @@ function calculateScore(reactions) {
 
 
 export {
-    isEmailRegistered, registerUser,
+    isEmailRegistered, registerUser, blockUser,
     updateUserProfile, updateProfilePic,
     followUser, isUserFollowed, getUserFollows,
     validPassword, validEmail, verifyUser,

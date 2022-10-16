@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 export default function Filter(props) {
 
+    // Filter to display followed user's posts
     const handleFilterChange = () => {
         if (props.filter === "all")
             props.setFilter("followed")

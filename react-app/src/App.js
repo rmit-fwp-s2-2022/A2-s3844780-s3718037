@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 // eslint-disable-next-line
 import { Modal } from 'bootstrap';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 import LandingPage from "./main/LandingPage";
@@ -15,7 +15,7 @@ import ViewProfile from "./profile/ViewProfile.js";
 import EditProfile from './profile/EditProfile';
 import DeleteProfile from './profile/DeleteProfile';
 import AddImage from './forum/AddImage';
-import { getUserInfo, USER_DATA } from "./Util.js";
+import { getUserInfo, USER_DATA, blockUser } from "./Util.js";
 
 export default function App() {
 	const navigate = useNavigate();
@@ -47,6 +47,16 @@ export default function App() {
 	const updateUser = () => {
 		setUser(getUserInfo());
 	}
+
+	useEffect(() => {
+		const blockUserLogin = async () => {
+			const userBlocked = await blockUser();
+			if (userBlocked)
+				userLogout();	
+		}
+		blockUserLogin();
+		console.log("Run effect")
+	}, [])
 
 	return (
 		<>

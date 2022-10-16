@@ -92,6 +92,7 @@ export default function Home(props) {
 
                             return <Thread
                                 key={thread.threadID}
+                                user={props.user}
                                 userID={thread.userID}
                                 threadID={thread.threadID}
                                 post={thread.post}

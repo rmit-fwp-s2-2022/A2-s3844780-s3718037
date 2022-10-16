@@ -22,6 +22,11 @@ module.exports = (sequelize, DataTypes) =>
 			type: DataTypes.TEXT,
 			allowNull: false
 		},
+		blocked: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: false
+		}
 	}, {
 		// Add the timestamp attributes (updatedAt, createdAt).
 		timestamps: true

@@ -34,6 +34,7 @@ export default function SignUp(props) {
         setInputs({ ...inputs, [name]: value});
     }
 
+    // Run when Form is submitted
     const userSignUp = async (event) => {
         event.preventDefault(); // Prevent page from refreshing/reloading
 
@@ -115,8 +116,7 @@ export default function SignUp(props) {
                             </div>
                             <div className="form-text mb-3" id="password-help-block" >
                                 <p>
-                                    Your password must be at least 8 characters long, with at least: one uppercase letter,
-                                    one number, and one special character
+                                Your password must be at least 8 characters long, with at least: one character, one number, and one special character
                                 </p>
                             </div>
                             <div className="mb-3">
