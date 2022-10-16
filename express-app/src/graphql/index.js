@@ -93,13 +93,18 @@ graphql.schema = buildSchema(`
 
   # Queries (read-only operations).
   type Query {
-      all_users: [User]
+      all_users: [User],
+      all_threads: [Thread],
+      all_comments: [Comment],
+      user(userID: Int): User,
+      thread(threadID: Int): Thread,
+      comment(commentID: Int): Comment
   }
 
   # Mutations (modify data in the underlying data-source, i.e., the database).
   type Mutation {
-    update_user(input: UserInput): User
-    update_thread(input: ThreadInput): Thread
+    update_user(input: UserInput): User,
+    update_thread(input: ThreadInput): Thread,
     update_comment(input: CommentInput): Comment
   }
 
@@ -107,8 +112,9 @@ graphql.schema = buildSchema(`
 
 // The root provides a resolver function for each API endpoint.
 graphql.root = {
-  // Queries.
 
+  // Queries
+  // --- User ---------------------------------------------------------
   // Return all users
   all_users: async () => {
     return await db.user.findAll();
@@ -136,6 +142,7 @@ graphql.root = {
     return user;
   },
 
+  // --- Threads ---------------------------------------------------------
   // Return all threads
   all_threads: async () => {
     return await db.thread.findAll();
@@ -160,6 +167,17 @@ graphql.root = {
 
     await thread.save();
     return thread;
+  },
+
+  // --- Comments ---------------------------------------------------------
+  // Return all comments
+  all_comments: async () => {
+    return await db.comment.findAll();
+  },
+
+  // Return a single comment based off commentID
+  comment: async (args) => {
+    return await db.comment.findByPk(args.commentID);
   },
 
   // Update comment
