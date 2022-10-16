@@ -152,8 +152,6 @@ export default function Thread(props) {
     return (
         <>
             {/* Edit thread */}
-            {console.log(user)}
-
             <EditPost threadID={props.threadID} post={props.post} postPic={props.postPic} passPost={setInputs} />
             {/* Delete thread */}
             <DeletePost threadID={props.threadID} passShowThread={setShowThread} />
