@@ -192,7 +192,7 @@ async function updateComment(comment) {
   const query = gql`
     mutation ($commentID: Int, $commentText: String, $createdAt: String,
       $updatedAt: String, $userID: Int, $threadID: Int) {
-        update_thread(input: {
+        update_comment(input: {
         commentID: $commentID,
         commentText: $commentText,
         createdAt: $createdAt,

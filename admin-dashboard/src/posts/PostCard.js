@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getUser } from "../data/repository";
+import { getUser, updateThread, updateComment } from "../data/repository";
 
 export default function PostCard(props) {
 
@@ -19,12 +19,35 @@ export default function PostCard(props) {
         fetchUser()
     }, [])
 
+    // Reset change
+    useEffect(() => {
+        setChange(false)
+    }, [change]);
+
     // Update change state
-    const removeComment = event => {
+    const removeComment = async () => {
+        // Hide posts while loading.
+        setIsLoading(true);
+
+        const comment = { ...props }
+        comment.commentText = "[**** This post has been deleted by the admin ***]"
+        // Update comment.
+        await updateComment(comment);
+
+        // Update state to cause threads to be re-rendered
+        setChange(true)
     };
 
     // Update change state
-    const removeThread = event => {
+    const removeThread = async () => {
+        // Hide posts while loading.
+        setIsLoading(true);
+        const thread = { ...props }
+        thread.post = "[**** This post has been deleted by the admin ***]"
+        // Update comment.
+        await updateThread(thread);
+        // Update state to cause threads to be re-rendered
+        setChange(true)
     };
 
 
@@ -41,7 +64,7 @@ export default function PostCard(props) {
                                 <div className="card-subtitle pt-1" dangerouslySetInnerHTML={{ __html: props.commentText }} />
                                 <div className="mt-3">
                                     <button className="btn btn-primary mx-4">Block User</button>
-                                    <button className="btn btn-danger" onClick={removeComment}>Remove Post</button>
+                                    <button className="btn btn-danger" onClick={() => removeComment()} >Remove Post</button>
                                 </div>
                             </div>
                         </div>
@@ -57,7 +80,7 @@ export default function PostCard(props) {
                                     : <div></div>}
                                 <div className="mt-3">
                                     <button className="btn btn-primary mx-4">Block User</button>
-                                    <button className="btn btn-danger" onClick={removeThread}>Remove Post</button>
+                                    <button className="btn btn-danger" onClick={() => removeThread()} >Remove Post</button>
                                 </div>
                             </div>
                         </div>
