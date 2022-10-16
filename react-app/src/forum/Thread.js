@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUserByID, newComment, getCommentsByID, dateFormatter, getUserInfo, storeReaction, getReactionCount } from "../Util";
+import { getUserByID, newComment, getCommentsByID, dateFormatter, storeReaction, getReactionCount } from "../Util";
 
 import Comment from "./Comment";
 import EditPost from "./EditPost";
@@ -136,7 +136,7 @@ export default function Thread(props) {
             // Create a new reaction and update scores
             if (reaction !== null) {
                 // Store/update reaction in database
-                await storeReaction(reaction, currentUser.userID, props.threadID, "threadID")
+                await storeReaction(reaction, props.user.userID, props.threadID, "threadID")
                 const score = await getReactionCount(props.threadID, "threadID");
                 setReactionScore(score)
             }
@@ -170,9 +170,6 @@ export default function Thread(props) {
         event.preventDefault();
         navigate("/profile", { state: { user: user } });
     }
-
-    // Get logged-in user. Stop user from being able to modify other users posts.
-    const currentUser = getUserInfo()
 
     // Handle upvoting a post event
     const upvotePost = (event) => {
@@ -208,7 +205,7 @@ export default function Thread(props) {
                                     <span className="text-muted thread-bar"> · {dateFormatter(props.postDate)}  </span>
                                     <span className="text-muted thread-bar"> · {reactionScore === null ? 0 + " Score" : reactionScore + " Score"}  </span>
                                     {/* Only allow the origional user of a post to edit or delete it */}
-                                    {currentUser.userID == props.userID ?
+                                    {props.user.userID == props.userID ?
                                         <>
                                             <EditIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#edit-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
                                             <DeleteIcon className="icon-button" data-bs-toggle="modal" data-bs-target={"#delete-post-modal" + props.threadID} style={{ color: 'grey', fontSize: 20 }} />
@@ -240,6 +237,7 @@ export default function Thread(props) {
                                 comments.map((comment) =>
                                     <Comment
                                         key={comment.commentID}
+                                        user={props.user}
                                         commentID={comment.commentID}
                                         userID={comment.userID}
                                         threadID={comment.threadID}

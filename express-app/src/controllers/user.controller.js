@@ -28,8 +28,10 @@ exports.one = async (req, res) => {
 exports.login = async (req, res) => {
 	const user = (await db.user.findAll({ where: { email: req.query.email } }))[0];
 
-	if (user === null || await argon2.verify(user.passwordHash, req.query.password) === false)
-		// Login failed.
+	if (user === null)
+		return null;
+	
+	if (await argon2.verify(user.passwordHash, req.query.password) === false)
 		res.json(null);
 	else
 		res.json(user);

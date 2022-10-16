@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUserByID, dateFormatter, storeReaction, getReactionCount, getUserInfo } from "../Util";
+import { getUserByID, dateFormatter, storeReaction, getReactionCount } from "../Util";
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 
@@ -30,7 +30,7 @@ export default function Comment(props) {
             // Create a new reaction and update scores
             if (reaction !== null) {
                 // Store/update reaction in database
-                await storeReaction(reaction, currentUser.userID, props.commentID, "commentID")
+                await storeReaction(reaction, props.user.userID, props.commentID, "commentID")
                 const score = await getReactionCount(props.commentID, "commentID");
                 setReactionScore(score)
             }
@@ -42,9 +42,6 @@ export default function Comment(props) {
         }
         createReaction();
     }, [reaction]);
-
-    // Get logged-in user for use in reactions.
-    const currentUser = getUserInfo()
 
     // Handle upvoting a post event
     const upvotePost = (event) => {

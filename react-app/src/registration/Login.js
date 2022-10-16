@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { verifyUser } from "../Util";
+import { isEmailRegistered, verifyUser } from "../Util";
 import { Modal } from 'bootstrap';
 
 export default function Login(props) {
@@ -29,20 +29,30 @@ export default function Login(props) {
     const userLogin = async (event) => {
         event.preventDefault(); // Prevent page from refreshing/reloading
 
-        const user = await verifyUser(inputs.email.toLowerCase(), inputs.password);
+        const emailRegistered = await isEmailRegistered(inputs.email.toLowerCase());
 
-        if (user !== null) {
-            // Close Login Modal
-            document.getElementById("login-btn-close").click();
+        if (emailRegistered) {
+            const user = await verifyUser(inputs.email.toLowerCase(), inputs.password);
 
-            props.setUserLoginData(user);
+            if (!user.blocked) {
+                if (user !== null) {
+                    // Close Login Modal
+                    document.getElementById("login-btn-close").click();
 
-            setTimeout(() => reset(), 500);
+                    props.setUserLoginData(user);
 
-            // Open MFA Modal
-            const MFAModal = new Modal(document.getElementById("mfa-modal"));
-            MFAModal.show();
+                    setTimeout(() => reset(), 500);
 
+                    // Open MFA Modal
+                    const MFAModal = new Modal(document.getElementById("mfa-modal"));
+                    MFAModal.show();
+
+                }
+                else
+                    setErrorMessage("Invalid email address and / or password");
+            }
+            else
+                setErrorMessage("Account blocked by Admin. Please contact the support team")
         }
         else
             setErrorMessage("Invalid email address and / or password");
