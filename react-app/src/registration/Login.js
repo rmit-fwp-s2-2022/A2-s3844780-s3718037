@@ -10,6 +10,7 @@ export default function Login(props) {
     const [inputs, setInputs] = useState(clearInputs);
     const [errorMessage, setErrorMessage] = useState(null);
 
+    // Resets the modal form
     const reset = () => {
         // Reset password input
         document.querySelector("#login-password").value = "";
@@ -26,6 +27,7 @@ export default function Login(props) {
         setInputs({ ...inputs, [event.target.name]: event.target.value });
     }
 
+    // Runs when Submit Login Form
     const userLogin = async (event) => {
         event.preventDefault(); // Prevent page from refreshing/reloading
 
@@ -34,11 +36,13 @@ export default function Login(props) {
         if (emailRegistered) {
             const user = await verifyUser(inputs.email.toLowerCase(), inputs.password);
 
+            // Is the user's account blocked?
             if (!user.blocked) {
                 if (user !== null) {
                     // Close Login Modal
                     document.getElementById("login-btn-close").click();
 
+                    // Log user in
                     props.setUserLoginData(user);
 
                     setTimeout(() => reset(), 500);
@@ -46,7 +50,6 @@ export default function Login(props) {
                     // Open MFA Modal
                     const MFAModal = new Modal(document.getElementById("mfa-modal"));
                     MFAModal.show();
-
                 }
                 else
                     setErrorMessage("Invalid email address and / or password");

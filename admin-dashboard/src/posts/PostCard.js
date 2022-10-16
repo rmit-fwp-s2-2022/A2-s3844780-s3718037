@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getUser, updateThread, updateComment } from "../data/repository";
+import { getUser, updateUser, updateThread, updateComment } from "../data/repository";
 
 export default function PostCard(props) {
 
@@ -10,11 +10,22 @@ export default function PostCard(props) {
     // Obtain user of post
     const [user, setUser] = useState("");
 
+    const [blockUser, setBlockUser] = useState(0)
+
+    const handleBlockUser = async (event) => {
+        props.user.blocked = parseInt(event.target.value);
+
+        // Update user block status
+        setBlockUser(props.user.blocked)
+        await updateUser(props.user);
+    };
+
     // Obtain user by ID
     useEffect(() => {
         const fetchUser = async () => {
             const user = await getUser(props.userID)
             setUser(user)
+            blockUser(user.blocked)
         }
         fetchUser()
     }, [])
@@ -63,8 +74,12 @@ export default function PostCard(props) {
                                 <h5 className="card-title">{user.name}</h5>
                                 <div className="card-subtitle pt-1" dangerouslySetInnerHTML={{ __html: props.commentText }} />
                                 <div className="mt-3">
-                                    <button className="btn btn-primary mx-4">Block User</button>
-                                    <button className="btn btn-danger" onClick={() => removeComment()} >Remove Post</button>
+                                    {
+                                        blockUser
+                                            ? <button className="btn btn-primary mx-4" value="0" onClick={handleBlockUser} >Unblock User</button>
+                                            : <button className="btn btn-danger mx-4" value="1" onClick={handleBlockUser} >Block User</button>
+                                    }
+                                    <button className="btn btn-danger" onClick={removeComment}>Remove Post</button>
                                 </div>
                             </div>
                         </div>

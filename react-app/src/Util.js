@@ -136,7 +136,6 @@ function dateFormatter(mySQL_Date) {
 // Password validation
 function validPassword(password) {
     // At least 8 characters long (?=.{8,}).
-    // At least one uppercase letter (?=.*[A-Z]).
     // At least one lowercase letter (?=.*[a-z]).
     // At least one digit (?=.*[0-9]).
     // At least one special character ([^A-Za-z0-9]).

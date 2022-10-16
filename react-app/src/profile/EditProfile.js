@@ -47,11 +47,13 @@ export default function EditProfile(props) {
         event.preventDefault(); // Prevent page from refreshing/reloading
         const emailLowerCase = inputs.email.toLowerCase();
 
+        // Is the email is updated?
         let emailRegistered;
-        if (emailLowerCase === props.user.email)
-            emailRegistered = false;
-        else
+        if (emailLowerCase !== props.user.email)
+            // Is email already registered?
             emailRegistered = await isEmailRegistered(emailLowerCase);
+        else
+            emailRegistered = false;
 
         if (!emailRegistered) {
             if (validEmail(emailLowerCase)) {
@@ -182,8 +184,7 @@ export default function EditProfile(props) {
                                 </div>
                                 <div className="form-text mb-3" id="password-help-block" >
                                     <p>
-                                        Your password must be at least 8 characters long, with at least: one uppercase letter,
-                                        one number, and one special character
+                                        Your password must be at least 8 characters long, with at least: one character, one number, and one special character
                                     </p>
                                 </div>
                                 <div className="mb-3">

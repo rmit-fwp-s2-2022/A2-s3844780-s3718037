@@ -6,6 +6,7 @@ export default function DisplayUser(props) {
     const [userFollowed, setUserFollowed] = useState(false);
 
     useEffect(() => {
+        // Is user (profile owner) followed to this user?
         const getUserFollowed = async () => {
             setUserFollowed(await isUserFollowed(props.user.userID, props.followUserID));
         }
@@ -31,6 +32,7 @@ export default function DisplayUser(props) {
                 !props.isDifferentUser &&
                 <div className="col text-center">
                     {
+                        // Which follow button to display
                         userFollowed
                             ? <button type="button" className="btn btn-danger" onClick={handleUserFollow} >Unfollow</button>
                             : <button type="button" className="btn btn-primary" onClick={handleUserFollow} >Follow</button>
