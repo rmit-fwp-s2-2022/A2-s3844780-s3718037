@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { getUserByID, dateFormatter } from "../Util";
+import { getUserByID, dateFormatter, storeReaction, getReactionCount, getUserInfo } from "../Util";
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
 
 export default function Comment(props) {
 
@@ -7,6 +9,10 @@ export default function Comment(props) {
     const [user, setUser] = useState(null)
     // Allow user data to be returned before displaying them
     const [isLoading, setIsLoading] = useState(true);
+    // User reactions state
+    const [reaction, setReaction] = useState(null);
+    // Reaction score
+    const [reactionScore, setReactionScore] = useState(null);
 
     // Obtain user by ID
     useEffect(() => {
@@ -18,6 +24,40 @@ export default function Comment(props) {
         fetchUser()
     }, [])
 
+    // Create/update reaction and set reaction scores.
+    useEffect(() => {
+        async function createReaction() {
+            // Create a new reaction and update scores
+            if (reaction !== null) {
+                // Store/update reaction in database
+                await storeReaction(reaction, currentUser.userID, props.commentID, "commentID")
+                const score = await getReactionCount(props.commentID, "commentID");
+                setReactionScore(score)
+            }
+            // Update scores upon render
+            if (reaction === null) {
+                const score = await getReactionCount(props.commentID, "commentID");
+                setReactionScore(score)
+            }
+        }
+        createReaction();
+    }, [reaction]);
+
+    // Get logged-in user for use in reactions.
+    const currentUser = getUserInfo()
+
+    // Handle upvoting a post event
+    const upvotePost = (event) => {
+        event.preventDefault();
+        setReaction(1)
+    }
+
+    // Handle upvoting a post event
+    const downvotePost = (event) => {
+        event.preventDefault();
+        setReaction(0)
+    }
+
 
     return (
         <>
@@ -27,11 +67,21 @@ export default function Comment(props) {
                     <div className="col-sm-1">
                         <img className="card-img rounded-circle profile-pic mx-4 my-3 border" src={user.profilePic} />
                     </div>
-                    <div className="col-sm-11 main-textarea">
+                    <div className="col-sm-9 main-textarea">
                         <div className="card-body mx-5 mt-1 pb-0 thread-body">
-                            <h5 className="card-title pt-1">{user.name}<span className="text-muted thread-date"> · {dateFormatter(props.postDate)}</span></h5>
+                            <h5 className="card-title pt-1">{user.name}
+                                <span className="text-muted thread-bar"> · {dateFormatter(props.postDate)}</span>
+                                <span className="text-muted thread-bar"> · {reactionScore === null ? 0 + " Score" : reactionScore + " Score"}  </span>
+                            </h5>
                             <div className="card-subtitle pt-1" dangerouslySetInnerHTML={{ __html: props.commentText }} />
                         </div>
+                    </div>
+                    <div className="col-sm-2">
+                        <>
+                            <a href="#" className="btn mt-3 reaction-icons" onClick={upvotePost}><ArrowUpward className="up-icon" style={{ fontSize: 30, color: '#6C757D' }} /></a>
+                            <a href="#" className="btn mt-3 reaction-icons" onClick={downvotePost}><ArrowDownward className="down-icon" style={{ fontSize: 30, color: '#6C757D' }} /></a>
+
+                        </>
                     </div>
                 </div>
             }
