@@ -1,4 +1,5 @@
 import PostCard from "./PostCard"
+import { inappropriateCheck } from "../Util";
 
 export default function DisplayPosts(props) {
     return (
@@ -7,7 +8,7 @@ export default function DisplayPosts(props) {
                 {
 
                     // If post is a thread
-                    props.hasOwnProperty("commentText") ?
+                    props.hasOwnProperty("commentText") && inappropriateCheck(props.commentText) == false ?
                         // If post is a comment
                         <PostCard
                             key={props.updatedAt}
@@ -17,7 +18,10 @@ export default function DisplayPosts(props) {
                             commentText={props.commentText}
                             postDate={props.updatedAt}
                         />
-                        :
+                        : <div></div>}
+                {
+                    // If post is a thread
+                    !props.hasOwnProperty("commentText") && inappropriateCheck(props.post) == false ?
                         < PostCard
                             key={props.updatedAt}
                             userID={props.userID}
@@ -26,7 +30,7 @@ export default function DisplayPosts(props) {
                             postDate={props.updatedAt}
                             postPic={props.postPic}
                         />
-                }
+                        : <div></div>}
             </div>
         </div>
     )

@@ -1,5 +1,3 @@
-import { getUsers, getUser, updateUser, updateThread, getThreads, getThread } from "./data/repository";
-
 
 function inappropriateCheck(post) {
     // Obtain an array of bad words/swear words
@@ -18,19 +16,6 @@ function inappropriateCheck(post) {
     }
 }
 
-// Delete a post based on if its a thread or comment post.
-async function deletePost(post, ID, ID_Type) {
-
-    if (ID_Type === "threadID") {
-        // const response = await axios.post(API_HOST + "/api/reactions/TReaction", { reaction, userID, ID });
-        // return response.data
-    } else {
-        // const response = await axios.post(API_HOST + "/api/reactions/CReaction", { reaction, userID, ID });
-        // return response.data
-    }
-
-}
-
 export {
-    inappropriateCheck, deletePost
+    inappropriateCheck
 }
