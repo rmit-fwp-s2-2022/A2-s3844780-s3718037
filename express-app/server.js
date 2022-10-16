@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("./src/database");
+const { graphqlHTTP } = require("express-graphql");
+const graphql = require("./src/graphql");
 
 // Database will be sync'ed in the background.
 db.sync();
@@ -12,6 +14,19 @@ app.use(express.json());
 
 // Add CORS suport.
 app.use(cors());
+
+// Add GraphQL to express server.
+// NOTE: You can use the GraphQL web-interface to test the GraphQL schema thanks to the graphiql parameter being true.
+// Access the web-interface when the server is running here: http://localhost:4001/graphql
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: graphql.schema,
+    rootValue: graphql.root,
+    graphiql: true
+  })
+);
+
 
 // Simple Hello World route.
 app.get("/", (req, res) => {
