@@ -163,7 +163,7 @@ async function getComments() {
   `;
 
   const data = await request(GRAPH_QL_URL, query);
-  return data.all_threads;
+  return data.all_comments;
 }
 
 // Return a single comment based off commentID
