@@ -203,8 +203,7 @@ export default function Thread(props) {
                         <div className="col-sm-9 main-textarea">
                             <div className="card-body mx-5 mt-1 pb-0 thread-body">
                                 <h5 className="card-title pt-1">{user != null ?
-                                    <a href="" onClick={viewProfile} className="profile-link"
-                                    >{user.name}</a> : ""}
+                                    <a href="" onClick={viewProfile} className="profile-link">{user.name}</a> : ""}
                                     <span className="text-muted thread-bar"> · {dateFormatter(props.postDate)}  </span>
                                     <span className="text-muted thread-bar"> · {reactionScore === null ? 0 + " Score" : reactionScore + " Score"}  </span>
                                     {/* Only allow the origional user of a post to edit or delete it */}

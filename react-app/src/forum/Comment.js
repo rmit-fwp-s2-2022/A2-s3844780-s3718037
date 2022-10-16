@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { getUserByID, dateFormatter, storeReaction, getReactionCount, getUserInfo } from "../Util";
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import { useNavigate } from "react-router-dom";
 
 export default function Comment(props) {
+
+    const navigate = useNavigate();
 
     // Get and set individual user related to comment
     const [user, setUser] = useState(null)
@@ -43,6 +46,13 @@ export default function Comment(props) {
         createReaction();
     }, [reaction]);
 
+    // View Profile of User
+    const viewProfile = (event) => {
+        event.preventDefault();
+        navigate("/profile", { state: { user: user } });
+    }
+    
+
     // Get logged-in user for use in reactions.
     const currentUser = getUserInfo()
 
@@ -69,7 +79,8 @@ export default function Comment(props) {
                     </div>
                     <div className="col-sm-9 main-textarea">
                         <div className="card-body mx-5 mt-1 pb-0 thread-body">
-                            <h5 className="card-title pt-1">{user.name}
+                            <h5 className="card-title pt-1">{user != null ?
+                                    <a href="" onClick={viewProfile} className="profile-link">{user.name}</a> : ""}
                                 <span className="text-muted thread-bar"> · {dateFormatter(props.postDate)}</span>
                                 <span className="text-muted thread-bar"> · {reactionScore === null ? 0 + " Score" : reactionScore + " Score"}  </span>
                             </h5>
