@@ -23,3 +23,4 @@ Tools/services used:
 - Argon2
 - Jest
 - GraphQL
+- Badwords

@@ -148,3 +148,4 @@ async function updateThread(thread) {
 export {
   getUsers, getUser, updateUser, updateThread, getThreads, getThread
 }
+
