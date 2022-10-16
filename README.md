@@ -22,3 +22,4 @@ Tools/services used:
 - Material-ui Icons
 - Argon2
 - Jest
+- GraphQL
