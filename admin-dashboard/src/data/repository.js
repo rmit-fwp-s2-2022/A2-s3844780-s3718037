@@ -11,11 +11,13 @@ async function getUsers() {
     {
       all_users {
         userID,
+        name,
         email,
         passwordHash,
         profilePic,
         createdAt,
-        updatedAt
+        updatedAt,
+        blocked
       }
     }
   `;
@@ -36,7 +38,8 @@ async function getUser(userID) {
         passwordHash,
         profilePic,
         createdAt,
-        updatedAt
+        updatedAt,
+        blocked
       }
     }
   `;
@@ -49,15 +52,16 @@ async function getUser(userID) {
 async function updateUser(user) {
   const query = gql`
     mutation ($userID: Int, $name: String, $email: String, $passwordHash: String,
-      $profilePic: String, $createdAt: String, $updatedAt: String) {
+      $profilePic: String, $createdAt: String, $updatedAt: String, $blocked: Int) {
       update_user(input: {
         userID: $userID,
         name: $name,
         email: $email,
-        passwordHash: p$asswordHash,
+        passwordHash: $passwordHash,
         profilePic: $profilePic,
         createdAt: $createdAt,
         updatedAt: $updatedAt
+        blocked: $blocked
       }) {
         userID,
         name,
@@ -65,7 +69,8 @@ async function updateUser(user) {
         passwordHash,
         profilePic,
         createdAt,
-        updatedAt
+        updatedAt,
+        blocked
       }
     }
   `;

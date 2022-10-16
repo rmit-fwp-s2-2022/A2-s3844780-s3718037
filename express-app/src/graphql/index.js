@@ -21,7 +21,8 @@ graphql.schema = buildSchema(`
     passwordHash: String,
     profilePic: String,
     createdAt: String,
-    updatedAt: String
+    updatedAt: String,
+    blocked: Int
   }
 
   # Thread table
@@ -78,7 +79,8 @@ graphql.schema = buildSchema(`
     passwordHash: String,
     profilePic: String,
     createdAt: String,
-    updatedAt: String
+    updatedAt: String,
+    blocked: Int
   }
 
   # CommentInput used for incoming data.
@@ -137,6 +139,7 @@ graphql.root = {
     user.profilePic = args.input.profilePic;
     user.createdAt = args.input.createdAt;
     user.updatedAt = args.input.updatedAt;
+    user.blocked = args.input.blocked;
 
     await user.save();
     return user;
