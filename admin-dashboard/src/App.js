@@ -1,6 +1,5 @@
 import React, { useEffect, useState, createContext } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { getUsers } from "./data/repository";
 
 import Header from "./other/Header";
 import PostSection from "./sections/PostSection";
@@ -16,20 +15,10 @@ export default function App() {
 	const navigate = useNavigate();
 
 	const viewHome = () => navigate("/")
-    const viewPosts = () => navigate("/posts")
+	const viewPosts = () => navigate("/posts")
 	const viewUsers = () => navigate("/users")
 
 	const [users, setUsers] = useState([]);
-
-	useEffect(() => {
-		const fetchUsers = async () => {
-			const users = await getUsers()
-			console.log(users)
-
-			setUsers(users);
-		}
-		fetchUsers()
-	}, [])
 
 	return (
 		<div className="App">
@@ -39,9 +28,9 @@ export default function App() {
 					<div className="container-fluid p-0">
 						<UpperSection />
 						<UsersContext.Provider value={users}>
-							<UserSection viewUsers={viewUsers}/>
+							<UserSection viewUsers={viewUsers} />
 						</UsersContext.Provider>
-						<PostSection viewPosts={viewPosts}/>
+						<PostSection viewPosts={viewPosts} />
 					</div>} />
 				<Route path="/posts" element={
 					<>
