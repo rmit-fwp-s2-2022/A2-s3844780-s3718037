@@ -7,6 +7,7 @@ Created by Emanuel Le (s3844780) and Michael Balkos (s3718037)
 
 References: 
 - Week 8 lab - Example 3 code
+- Week 10 lab - Example 1 code
 
 Tools/services used:
 - Bootstrap
@@ -21,3 +22,4 @@ Tools/services used:
 - Material-ui Icons
 - Argon2
 - Jest
+- GraphQL
