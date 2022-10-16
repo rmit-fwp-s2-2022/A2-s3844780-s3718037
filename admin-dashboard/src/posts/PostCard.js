@@ -19,7 +19,15 @@ export default function PostCard(props) {
         fetchUser()
     }, [])
 
-    console.log(props)
+    // Update change state
+    const removeComment = event => {
+    };
+
+    // Update change state
+    const removeThread = event => {
+    };
+
+
     return (
         <>
             {
@@ -33,7 +41,7 @@ export default function PostCard(props) {
                                 <div className="card-subtitle pt-1" dangerouslySetInnerHTML={{ __html: props.commentText }} />
                                 <div className="mt-3">
                                     <button className="btn btn-primary mx-4">Block User</button>
-                                    <button className="btn btn-danger">Remove Post</button>
+                                    <button className="btn btn-danger" onClick={removeComment}>Remove Post</button>
                                 </div>
                             </div>
                         </div>
@@ -44,10 +52,12 @@ export default function PostCard(props) {
                             <div className="card-body">
                                 <h5 className="card-title">{user.name}</h5>
                                 <div className="card-subtitle pt-1" dangerouslySetInnerHTML={{ __html: props.post }} />
-                                <img src={props.postPic} className="card-img-top" alt="..." />
+                                {props.postPic !== "" ?
+                                    <img src={props.postPic} className="card-img-top" alt="..." />
+                                    : <div></div>}
                                 <div className="mt-3">
                                     <button className="btn btn-primary mx-4">Block User</button>
-                                    <button className="btn btn-danger">Remove Post</button>
+                                    <button className="btn btn-danger" onClick={removeThread}>Remove Post</button>
                                 </div>
                             </div>
                         </div>
