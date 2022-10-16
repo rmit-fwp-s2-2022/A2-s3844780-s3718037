@@ -75,6 +75,47 @@ async function updateUser(user) {
   return data.update_user;
 }
 
+// Return all threads
+async function getThreads() {
+  // Simply query with no parameters.
+  const query = gql`
+    {
+      all_threads {
+        threadID,
+        post,
+        postPic,
+        createdAt,
+        updatedAt,
+        userID
+      }
+    }
+  `;
+
+  const data = await request(GRAPH_QL_URL, query);
+  return data.all_threads;
+}
+
+// Return a single thread based off threadID
+async function getThread(threadID) {
+  // Query with parameters (variables).
+  const query = gql`
+    query ($threadID: Int) {
+      thread(threadID: $threadID) {
+        threadID,
+        post,
+        postPic,
+        createdAt,
+        updatedAt,
+        userID
+      }
+    }
+  `;
+
+  const variables = { threadID };
+  const data = await request(GRAPH_QL_URL, query, variables);
+  return data.thread;
+}
+
 async function updateThread(thread) {
   const query = gql`
     mutation ($threadID: Int, $post: String, $postPic: String,
@@ -104,8 +145,6 @@ async function updateThread(thread) {
 }
 
 
-
-
 export {
-  getUsers, getUser, updateUser, updateThread
+  getUsers, getUser, updateUser, updateThread, getThreads, getThread
 }

@@ -108,7 +108,7 @@ graphql.root = {
   update_user: async (args) => {
     const user = await db.user.findByPk(args.input.userID);
 
-    // Updatefields.
+    // Update fields.
     user.userID = args.input.userID;
     user.name = args.input.name;
     user.email = args.input.email;
@@ -121,11 +121,21 @@ graphql.root = {
     return user;
   },
 
+  // Return all threads
+  all_threads: async () => {
+    return await db.thread.findAll();
+  },
+
+  // Return a single thread based off threadID
+  thread: async (args) => {
+    return await db.thread.findByPk(args.threadID);
+  },
+
   // Update thread
   update_thread: async (args) => {
     const thread = await db.thread.findByPk(args.input.threadID);
 
-    // Updatefields.
+    // Update fields.
     thread.threadID = args.input.threadID;
     thread.post = args.input.post;
     thread.postPic = args.input.postPic;
@@ -137,12 +147,7 @@ graphql.root = {
     return thread;
   }
 
-
-
 };
-
-
-
 
 
 module.exports = graphql;
