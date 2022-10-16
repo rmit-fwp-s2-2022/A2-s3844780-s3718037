@@ -81,7 +81,7 @@ export default function NewPost(props) {
                         {/* Message textarea */}
                         <div className="col-sm-10 main-textarea">
                             <div className="card-body mx-4 mt-1 main-textarea">
-                                <ReactQuill className="form-control" name="post" value={post} onChange={setPost} onKeyDown={onkeydown} style={{ height: "68px" }} theme="bubble" placeholder="Post a message..." />
+                                <ReactQuill id="newPost" className="form-control" name="post" value={post} onChange={setPost} onKeyDown={onkeydown} style={{ height: "68px" }} theme="bubble" placeholder="Post a message..." />
                             </div>
                         </div>
                         {/* Upload image section */}
